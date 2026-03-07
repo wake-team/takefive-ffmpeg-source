@@ -55,7 +55,7 @@ under the prebuilt folder.\n"
 }
 
 enable_main_build() {
-  export API=24
+  export API=26
 }
 
 enable_lts_build() {
