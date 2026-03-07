@@ -14,12 +14,12 @@ To protect the TakeFive App commercial source code, this build is configured in 
 
 ### 1. Build for iOS (XCFrameworks)
 \`\`\`bash
-./ios.sh -x --enable-ios-videotoolbox --enable-ios-avfoundation --enable-fontconfig --enable-freetype --enable-fribidi --enable-lame --enable-libass --enable-openh264 --disable-armv7 --disable-armv7s --disable-arm64e --disable-i386 --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst --target=15.1
+./ios.sh -x --enable-ios-videotoolbox --enable-ios-avfoundation --enable-fontconfig --enable-freetype --enable-fribidi --enable-libass --enable-openh264 --disable-armv7 --disable-armv7s --disable-arm64e --disable-i386 --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst --target=15.1
 \`\`\`
 
 ### 2. Build for Android (AAR)
 \`\`\`bash
-./android.sh --enable-lame --enable-openh264 --api=26
+./android.sh --enable-openh264 --api=26
 \`\`\`
 
 ---
