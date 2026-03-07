@@ -62,10 +62,10 @@ libraries are created under the prebuilt folder.\n"
 }
 
 enable_main_build() {
-  if [[ $(compare_versions "$DETECTED_IOS_SDK_VERSION" "12.1") -le 0 ]]; then
+  if [[ $(compare_versions "$DETECTED_IOS_SDK_VERSION" "15.0") -le 0 ]]; then
     export IOS_MIN_VERSION=$DETECTED_IOS_SDK_VERSION
   else
-    export IOS_MIN_VERSION=12.1
+    export IOS_MIN_VERSION=15.0
   fi
 
   if [[ $(compare_versions "$DETECTED_IOS_SDK_VERSION" "14.0") -le 0 ]]; then
