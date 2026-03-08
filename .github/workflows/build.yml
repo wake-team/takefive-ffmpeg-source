@@ -18,9 +18,10 @@ jobs:
       run: |
         brew install autoconf automake libtool pkg-config
 
-    - name: Build iOS (LGPL Minimal - ARM64 Only)
+    - name: Build iOS (LGPL Minimal)
       run: |
         chmod +x *.sh scripts/*.sh
+        export cross_compiling=yes
         ./ios.sh -x --enable-ios-videotoolbox --enable-ios-avfoundation \
           --disable-x86-64 --disable-i386 --disable-armv7 --disable-armv7s \
           --disable-arm64e --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst \
@@ -28,14 +29,18 @@ jobs:
 
     - name: Package XCFrameworks
       run: |
-        cd prebuilt/apple-xcframework
-        zip -r takefive-ffmpeg-ios.zip *.xcframework
+        # Robustly find all xcframeworks and zip them
+        mkdir -p artifacts/ios
+        find prebuilt -name "*.xcframework" -type d -exec cp -R {} artifacts/ios/ \;
+        cd artifacts/ios
+        zip -r ../../takefive-ffmpeg-ios.zip .
+        cd ../..
 
     - name: Upload iOS Artifact
       uses: actions/upload-artifact@v4
       with:
         name: takefive-ffmpeg-ios
-        path: prebuilt/apple-xcframework/takefive-ffmpeg-ios.zip
+        path: takefive-ffmpeg-ios.zip
 
   build-android:
     name: Build Android AAR
@@ -59,16 +64,24 @@ jobs:
     - name: Build Android (LGPL Minimal)
       run: |
         chmod +x *.sh scripts/*.sh
-        ./android.sh --disable-arm-v7a-neon --disable-x86 --target=26 || (cat build.log && exit 1)
+        export cross_compiling=yes
+        # Correct parameter is --api-level=26
+        ./android.sh --disable-x86 --api-level=26 || (cat build.log && exit 1)
 
-    - name: Package Android Artifact
+    - name: Package Android Artifacts
       run: |
-        find prebuilt -name "*.aar" -exec cp {} ffmpeg-kit-android.aar \; || echo "No AAR found"
+        mkdir -p artifacts/android
+        find prebuilt -name "*.aar" -exec cp {} artifacts/android/ \;
+        # If no AAR found, zip the libs
+        if [ -z "\$(ls -A artifacts/android)" ]; then
+          find prebuilt -name "*.so" -exec cp {} artifacts/android/ \;
+        fi
+        cd artifacts/android
+        zip -r ../../takefive-ffmpeg-android.zip .
+        cd ../..
 
     - name: Upload Android Artifact
       uses: actions/upload-artifact@v4
       with:
         name: takefive-ffmpeg-android
-        path: |
-          ffmpeg-kit-android.aar
-          prebuilt/**/*.aar
+        path: takefive-ffmpeg-android.zip
