@@ -14,7 +14,7 @@ autoreconf_library "${LIB_NAME}" 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 # ld: -force_cpusubtype_ALL and -bitcode_bundle (Xcode setting ENABLE_BITCODE=YES) cannot be used together
 ${SED_INLINE} 's/-force_cpusubtype_ALL//g' ${BASEDIR}/src/${LIB_NAME}/configure
 
-PKG_CONFIG= ./configure \
+PKG_CONFIG= cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \
@@ -26,7 +26,7 @@ PKG_CONFIG= ./configure \
   --disable-docs \
   --disable-examples \
   --disable-oggtest \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 make -j$(get_cpu_count) || return 1
 

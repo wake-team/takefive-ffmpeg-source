@@ -30,7 +30,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_leptonica}
   autoreconf_library "${LIB_NAME}" 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-zlib \
@@ -43,7 +43,7 @@ fi
   --disable-shared \
   --disable-fast-install \
   --disable-programs \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 make -j$(get_cpu_count) || return 1
 

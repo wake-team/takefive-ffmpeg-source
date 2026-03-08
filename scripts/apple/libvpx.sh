@@ -54,7 +54,7 @@ x86-64-mac-catalyst)
   ;;
 esac
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --target="${TARGET}" \
   --extra-cflags="${CFLAGS}" \

@@ -34,7 +34,7 @@ overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.sub "${BASEDIR}"/src/
 # WORKAROUND TO FIX arm64 BUILDS
 ${SED_INLINE} 's/\-arch arm64//g' "${BASEDIR}"/src/"${LIB_NAME}"/configure 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --enable-pic \
   --sysroot=${SDK_PATH} \
@@ -42,7 +42,7 @@ ${SED_INLINE} 's/\-arch arm64//g' "${BASEDIR}"/src/"${LIB_NAME}"/configure 1>>"$
   --disable-cli \
   ${ASM_OPTIONS} \
   ${DEBUG_OPTIONS} \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 make -j$(get_cpu_count) || return 1
 

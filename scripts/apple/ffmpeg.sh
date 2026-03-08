@@ -477,7 +477,7 @@ git checkout libavformat/protocols.c 1>>"${BASEDIR}"/build.log 2>&1
 git checkout libavutil 1>>"${BASEDIR}"/build.log 2>&1
 
 # 1. Workaround to prevent adding of -mdynamic-no-pic flag
-${SED_INLINE} 's/check_cflags -mdynamic-no-pic && add_asflags -mdynamic-no-pic;/check_cflags -mdynamic-no-pic;/g' ./configure 1>>"${BASEDIR}"/build.log 2>&1 || return 1
+${SED_INLINE} 's/check_cflags -mdynamic-no-pic && add_asflags -mdynamic-no-pic;/check_cflags -mdynamic-no-pic;/g' cross_compiling=yes ./configure 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 
 # 2. Workaround for videotoolbox on mac catalyst
 if [[ ${ARCH} == *-mac-catalyst ]]; then
@@ -491,7 +491,7 @@ ${SED_INLINE} 's/static int av_log_level/__thread int av_log_level/g' "${BASEDIR
 
 ###################################################################
 
-./configure \
+cross_compiling=yes ./configure \
   --cross-prefix="${HOST}-" \
   --sysroot="${SDK_PATH}" \
   --prefix="${FFMPEG_LIBRARY_PATH}" \

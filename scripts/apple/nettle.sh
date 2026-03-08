@@ -27,7 +27,7 @@ fi
 overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.guess "${BASEDIR}"/src/"${LIB_NAME}"/config.guess || return 1
 overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.sub "${BASEDIR}"/src/"${LIB_NAME}"/config.sub || return 1
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --enable-pic \
   --enable-static \
@@ -40,7 +40,7 @@ overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.sub "${BASEDIR}"/src/
   --disable-gcov \
   --disable-documentation \
   ${ASM_OPTIONS} \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 make -j$(get_cpu_count) || return 1
 

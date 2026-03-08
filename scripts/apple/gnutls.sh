@@ -33,7 +33,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_gnutls} -e
   overwrite_file ./gnulib/lib/fpending.c ./src/gl/fpending.c || return 1
 fi
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \
@@ -54,7 +54,7 @@ fi
   --disable-tools \
   --disable-maintainer-mode \
   --disable-full-test-suite \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 make -j$(get_cpu_count) || return 1
 

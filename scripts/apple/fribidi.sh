@@ -8,7 +8,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_fribidi} -
   autoreconf_library "${LIB_NAME}" 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-./configure \
+cross_compiling=yes cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \
@@ -17,7 +17,7 @@ fi
   --disable-fast-install \
   --disable-debug \
   --disable-deprecated \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 # WORKAROUND TO DISABLE BUILDING OF doc FOLDER (doc depends on c2man which is not available on all platforms)
 ${SED_INLINE} 's/ doc / /g' "${BASEDIR}"/src/"${LIB_NAME}"/Makefile || return 1

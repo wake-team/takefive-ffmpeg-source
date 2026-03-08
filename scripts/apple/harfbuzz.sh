@@ -8,7 +8,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_harfbuzz} 
   NOCONFIGURE=1 ./autogen.sh || return 1
 fi
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \
@@ -17,7 +17,7 @@ fi
   --enable-static \
   --disable-shared \
   --disable-fast-install \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 # WORKAROUNDS
 git checkout ${BASEDIR}/src/${LIB_NAME}/libtool 1>>"${BASEDIR}"/build.log 2>&1

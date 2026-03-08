@@ -58,7 +58,7 @@ if [[ ${FFMPEG_KIT_BUILD_TYPE} != "macos" ]]; then
   ${SED_INLINE} 's/${wl}dynamic_lookup//g' configure 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-./configure \
+cross_compiling=yes ./configure \
   --prefix="${FFMPEG_KIT_LIBRARY_PATH}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \
@@ -66,7 +66,7 @@ fi
   ${VIDEOTOOLBOX_SUPPORT_FLAG} \
   --disable-fast-install \
   --disable-maintainer-mode \
-  --host="${HOST}" 1>>"${BASEDIR}"/build.log 2>&1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache 1>>"${BASEDIR}"/build.log 2>&1
 
 # WORKAROUND FOR clang: warning: using sysroot for 'MacOSX' but targeting 'iPhone'
 ${SED_INLINE} "s|allow_undefined_flag -o|allow_undefined_flag -target $(get_target) -o|g" libtool 1>>"${BASEDIR}"/build.log 2>&1

@@ -11,7 +11,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_fontconfig
   autoreconf_library "${LIB_NAME}" 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-./configure \
+cross_compiling=yes cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-libiconv-prefix="${SDK_PATH}"/usr \
@@ -23,7 +23,7 @@ fi
   --disable-rpath \
   --disable-libxml2 \
   --disable-docs \
-  --host="${HOST}" || return 1
+  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
 
 # DISABLE IOS TESTS with system() calls - system() is deprecated for IOS
 # 1. test-bz106632.c
