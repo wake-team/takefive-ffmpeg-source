@@ -31,7 +31,7 @@ if [[ -n "$DETECTED_IOS_SDK_VERSION" && $(compare_versions "$DETECTED_IOS_SDK_VE
   ${SED_INLINE} "s|ZLIB_VERNUM default .*|ZLIB_VERNUM default 0|g" "${BASEDIR}"/src/"${LIB_NAME}"/scripts/pnglibconf.dfa
 fi
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \

@@ -11,7 +11,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_fontconfig
   autoreconf_library "${LIB_NAME}" 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-libiconv-prefix="${SDK_PATH}"/usr \
