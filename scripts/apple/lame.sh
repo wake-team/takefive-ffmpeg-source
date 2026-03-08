@@ -13,7 +13,7 @@ fi
 cp /opt/homebrew/opt/libtool/share/libtool/build-aux/config.sub config.sub
 cp /opt/homebrew/opt/libtool/share/libtool/build-aux/config.guess config.guess
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \

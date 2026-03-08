@@ -29,7 +29,7 @@ fi
 # ALWAYS REGENERATE BUILD FILES - NECESSARY TO APPLY THE WORKAROUNDS
 ./bootstrap.sh
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   ${ASM_OPTIONS} \
   --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1

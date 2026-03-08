@@ -18,7 +18,7 @@ fi
 overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.guess "${BASEDIR}"/src/"${LIB_NAME}"/builds/unix/config.guess || return 1
 overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.sub "${BASEDIR}"/src/"${LIB_NAME}"/builds/unix/config.sub || return 1
 
-cross_compiling=yes cross_compiling=yes ./configure \
+cross_compiling=yes ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-zlib \

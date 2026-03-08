@@ -12,7 +12,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_libtheora}
   ./autogen.sh || return 1
 fi
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --enable-static \

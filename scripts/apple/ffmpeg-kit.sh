@@ -58,7 +58,7 @@ if [[ ${FFMPEG_KIT_BUILD_TYPE} != "macos" ]]; then
   ${SED_INLINE} 's/${wl}dynamic_lookup//g' configure 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${FFMPEG_KIT_LIBRARY_PATH}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \

@@ -13,7 +13,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_tesseract}
   ./autogen.sh 1>>"${BASEDIR}"/build.log 2>&1 || return 1
 fi
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --without-tensorflow \

@@ -33,7 +33,7 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_gnutls} -e
   overwrite_file ./gnulib/lib/fpending.c ./src/gl/fpending.c || return 1
 fi
 
-cross_compiling=yes ./configure \
+./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
   --with-sysroot="${SDK_PATH}" \
