@@ -17,7 +17,7 @@ fi
   --disable-fftw \
   --disable-shared \
   --disable-fast-install \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 # WORKAROUND TO DISABLE BUILDING OF EXAMPLES AND TESTS
 ${SED_INLINE} 's/^examples_/#examples_/g' "${BASEDIR}"/src/"${LIB_NAME}"/Makefile || return 1

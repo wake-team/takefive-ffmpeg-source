@@ -42,7 +42,7 @@ ${SED_INLINE} 's/\-arch arm64//g' "${BASEDIR}"/src/"${LIB_NAME}"/configure 1>>"$
   --disable-cli \
   ${ASM_OPTIONS} \
   ${DEBUG_OPTIONS} \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 make -j$(get_cpu_count) || return 1
 

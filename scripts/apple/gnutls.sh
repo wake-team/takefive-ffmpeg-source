@@ -54,7 +54,7 @@ fi
   --disable-tools \
   --disable-maintainer-mode \
   --disable-full-test-suite \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 make -j$(get_cpu_count) || return 1
 

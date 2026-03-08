@@ -32,7 +32,7 @@ fi
 ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   ${ASM_OPTIONS} \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 make || return 1
 

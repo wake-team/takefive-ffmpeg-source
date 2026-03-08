@@ -25,7 +25,7 @@ cp /opt/homebrew/opt/libtool/share/libtool/build-aux/config.guess config.guess
   --disable-frontend \
   --disable-efence \
   --disable-gtktest \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 make -j$(get_cpu_count) || return 1
 

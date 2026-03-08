@@ -41,7 +41,7 @@ fi
   --disable-unversioned-libpng-pc \
   --disable-unversioned-libpng-config \
   ${ASM_OPTIONS} \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 make -j$(get_cpu_count) || return 1
 

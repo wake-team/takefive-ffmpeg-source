@@ -26,7 +26,7 @@ fi
   --disable-graphics \
   --disable-openmp \
   --disable-tessdata-prefix \
-  --host="${HOST}" --cache-file=/tmp/ffmpeg_config.cache || return 1
+  --host="${HOST}" || return 1
 
 # WORKAROUNDS
 git checkout ${BASEDIR}/src/${LIB_NAME}/libtool 1>>"${BASEDIR}"/build.log 2>&1
