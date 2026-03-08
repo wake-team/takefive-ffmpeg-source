@@ -21,9 +21,6 @@ jobs:
     - name: Build iOS (LGPL Minimal - ARM64 Only)
       run: |
         chmod +x *.sh scripts/*.sh
-        export cross_compiling=yes
-        # Build for ARM64 (Device) and ARM64-Simulator (Apple Silicon Mac)
-        # Disabling all Intel/Legacy architectures to ensure success
         ./ios.sh -x --enable-ios-videotoolbox --enable-ios-avfoundation \
           --disable-x86-64 --disable-i386 --disable-armv7 --disable-armv7s \
           --disable-arm64e --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst \
@@ -62,14 +59,11 @@ jobs:
     - name: Build Android (LGPL Minimal)
       run: |
         chmod +x *.sh scripts/*.sh
-        export cross_compiling=yes
-        # Using pre-installed NDK on GitHub Ubuntu runner
-        export ANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME
-        ./android.sh --disable-x86 --api=26 || (cat build.log && exit 1)
+        ./android.sh --disable-arm-v7a-neon --disable-x86 --target=26 || (cat build.log && exit 1)
 
     - name: Package Android Artifact
       run: |
-        find prebuilt -name "*.aar" -exec cp {} ffmpeg-kit-android.aar \; || echo "No AAR yet"
+        find prebuilt -name "*.aar" -exec cp {} ffmpeg-kit-android.aar \; || echo "No AAR found"
 
     - name: Upload Android Artifact
       uses: actions/upload-artifact@v4
