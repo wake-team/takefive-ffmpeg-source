@@ -1020,7 +1020,7 @@ android_ndk_cmake() {
     -H"${BASEDIR}"/src/"${LIB_NAME}" \
     -B"${BUILD_DIR}" \
     "${ASM_OPTIONS}" \
-    -DANDROID_PLATFORM=android-"${API}"
+    -DANDROID_PLATFORM=android-"${API}" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 }
 
 set_toolchain_paths() {
