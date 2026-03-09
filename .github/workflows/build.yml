@@ -21,6 +21,7 @@ jobs:
     - name: Build iOS (LGPL Minimal - ARM64 Only)
       run: |
         chmod +x *.sh scripts/*.sh
+        export cross_compiling=yes
         ./ios.sh -x --enable-ios-videotoolbox --enable-ios-avfoundation \
           --disable-x86-64 --disable-i386 --disable-armv7 --disable-armv7s \
           --disable-arm64e --disable-arm64-mac-catalyst --disable-x86-64-mac-catalyst \
@@ -56,9 +57,10 @@ jobs:
 
     - name: Setup NDK r25c
       run: |
-        # Explicitly install and use NDK r25c which is more compatible with FFmpegKit
-        echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.2.9519653" --sdk_root=${ANDROID_HOME}
+        # Use the pre-installed sdkmanager to force install r25c
+        echo "y" | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.2.9519653" --sdk_root=${ANDROID_HOME}
         echo "ANDROID_NDK_ROOT=${ANDROID_HOME}/ndk/25.2.9519653" >> $GITHUB_ENV
+        echo "ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/25.2.9519653" >> $GITHUB_ENV
 
     - name: Install Dependencies
       run: |
@@ -68,8 +70,9 @@ jobs:
     - name: Build Android (LGPL Minimal)
       run: |
         chmod +x *.sh scripts/*.sh
-        # Force CMake to be more permissive via environment variables
-        export CMAKE_FLAGS="-DCMAKE_POLICY_DEFAULT_CMP0000=OLD"
+        export cross_compiling=yes
+        # Explicitly pass the NDK path to FFmpegKit scripts
+        export ANDROID_NDK_ROOT=${ANDROID_HOME}/ndk/25.2.9519653
         ./android.sh --disable-x86 --api-level=26 || (cat build.log && exit 1)
 
     - name: Package Android Artifacts
