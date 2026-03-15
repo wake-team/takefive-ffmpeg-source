@@ -6,6 +6,6 @@
 build.log
 .tmp/
 prebuilt/
-src/*
+#src/*
 !src/.gitignore
 tools/android/.gradle/

@@ -25,6 +25,9 @@ echo "🧹 Cleaning previous builds..."
 rm -rf "${OUT_DIR}"
 mkdir -p "${PREFIX}"
 
+# 2.5 Fetch Dependencies 
+bash ./scripts/fetch_deps.sh 
+
 # 3. Enter Source Directory
 cd "${SRC_DIR}"
 
@@ -45,7 +48,7 @@ arch -arm64 env TMPDIR=/tmp bash ./configure \
     --disable-debug \
     --disable-asm \
     --enable-pic \
-    --enable-videotoolbox \
+    --enable-videotoolbox --disable-audiotoolbox \
     --enable-avfoundation \
     --disable-network \
     --enable-small \
