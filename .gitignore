@@ -1,0 +1,11 @@
+/.tmp/
+/*.log
+/prebuilt/
+.DS_Store
+.idea
+build.log
+.tmp/
+prebuilt/
+src/*
+!src/.gitignore
+tools/android/.gradle/
