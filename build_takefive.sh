@@ -1,38 +1,58 @@
 #!/bin/bash
 set -e
 
-# Workaround for macOS Gatekeeper incorrectly quarantining scripts in /var/folders/
-export TMPDIR=/tmp
-
-
 echo "=========================================================="
-echo "🎬 TakeFive Custom FFmpeg Engine Builder (LGPL / arm64)"
+echo "🎬 TakeFive Dynamic FFmpeg Engine Builder"
 echo "=========================================================="
 
-# 1. Define Paths
+# 1. Paths
 BASE_DIR="$(pwd)"
 SRC_DIR="${BASE_DIR}/src/ffmpeg"
 OUT_DIR="${BASE_DIR}/takefive_prebuilt"
 PREFIX="${OUT_DIR}/arm64"
+DEPS_BASE_DIR="${OUT_DIR}/dependencies"
 
-# 2. Get Xcode SDK Paths
+# 2. SDK Setup
 SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
 CC=$(xcrun --sdk iphoneos -f clang)
 CXX=$(xcrun --sdk iphoneos -f clang++)
 
-echo "🛠️  Using SDK: ${SDK_PATH}"
-echo "🧹 Cleaning previous builds..."
-rm -rf "${OUT_DIR}"
-mkdir -p "${PREFIX}"
+# 3. Dynamic Flag Processing
+FFMPEG_EXTRA_FLAGS=()
+FFMPEG_CFLAGS=("-arch arm64 -miphoneos-version-min=15.1")
+FFMPEG_LDFLAGS=("-arch arm64 -miphoneos-version-min=15.1")
 
-# 2.5 Fetch Dependencies 
-bash ./scripts/fetch_deps.sh 
+# Ensure deps dir exists
+mkdir -p "${DEPS_BASE_DIR}"
 
-# 3. Enter Source Directory
+# Fetch all sources first
+bash ./scripts/fetch_deps.sh
+
+for arg in "$@"; do
+  case $arg in
+    --enable-*)
+      LIB_NAME=$(echo $arg | sed 's/--enable-//')
+      BUILD_SCRIPT="./scripts/build_${LIB_NAME}.sh"
+      
+      if [ -f "$BUILD_SCRIPT" ]; then
+        echo "🔌 Injecting dependency: ${LIB_NAME}..."
+        bash "$BUILD_SCRIPT"
+        
+        LIB_PATH="${DEPS_BASE_DIR}/${LIB_NAME}"
+        FFMPEG_EXTRA_FLAGS+=("$arg")
+        FFMPEG_CFLAGS+=("-I${LIB_PATH}/include")
+        FFMPEG_LDFLAGS+=("-L${LIB_PATH}/lib")
+      else
+        echo "⚠️  No build script found for ${LIB_NAME}, skipping..."
+      fi
+      ;;
+  esac
+done
+
+# 4. Configure & Build FFmpeg
 cd "${SRC_DIR}"
+echo "⚙️  Configuring FFmpeg with injected flags: ${FFMPEG_EXTRA_FLAGS[*]}"
 
-# 4. Configure FFmpeg (The heart of the build)
-echo "⚙️  Configuring FFmpeg for iOS arm64..."
 arch -arm64 env TMPDIR=/tmp bash ./configure \
     --prefix="${PREFIX}" \
     --enable-cross-compile \
@@ -41,27 +61,14 @@ arch -arm64 env TMPDIR=/tmp bash ./configure \
     --sysroot="${SDK_PATH}" \
     --cc="${CC}" \
     --cxx="${CXX}" \
-    --extra-cflags="-arch arm64 -miphoneos-version-min=15.1 -fembed-bitcode" \
-    --extra-ldflags="-arch arm64 -miphoneos-version-min=15.1 -fembed-bitcode" \
-    --disable-programs \
-    --disable-doc \
-    --disable-debug \
-    --disable-asm \
-    --enable-pic \
-    --enable-videotoolbox --disable-audiotoolbox \
-    --enable-avfoundation \
-    --disable-network \
-    --enable-small \
-    --enable-version3 \
-    --disable-shared \
-    --enable-static
+    --extra-cflags="${FFMPEG_CFLAGS[*]}" \
+    --extra-ldflags="${FFMPEG_LDFLAGS[*]}" \
+    --disable-programs --disable-doc --disable-debug --disable-asm \
+    --enable-pic --enable-videotoolbox --enable-avfoundation --disable-audiotoolbox \
+    --enable-small --enable-version3 --disable-shared --enable-static \
+    "${FFMPEG_EXTRA_FLAGS[@]}"
 
-# 5. Compile
-echo "🔨 Compiling... (This will take a few minutes)"
 make -j$(sysctl -n hw.ncpu)
-
-# 6. Install
-echo "📦 Installing to ${PREFIX}..."
 make install
 
-echo "✅ Build Successful! Files are in ${PREFIX}"
+echo "✅ Dynamic Build Successful! Files in ${PREFIX}"
