@@ -59,6 +59,13 @@ Because this engine creates pure, precompiled static libraries (e.g., `libavcode
 5. **Link Dependencies**: Ensure you dynamically link the `VideoToolbox.framework`, `AudioToolbox.framework`, `CoreMedia.framework`, and `AVFoundation.framework` in Xcode, as FFmpeg relies on these Apple-native libraries for hardware acceleration.
 6. **Done**: You can now import FFmpeg headers and invoke its C-API directly within your iOS app bundle.
 
+#### Android Integration (JNI / NDK)
+1. **Download the Artifact**: Navigate to the latest successful GitHub Action run and download the generated Android `.zip` or `.aar` artifact containing the compiled `.so` (shared) or `.a` (static) binary files for `arm64-v8a` and `armeabi-v7a`.
+2. **JNI / CMakeLists**: Move the extracted C headers (`include/`) and library files (`lib/`) into your Android project's `app/src/main/cpp` directory or equivalent natively mounted folder.
+3. **Link Libraries**: In your Android `CMakeLists.txt`, set up the prebuilt libraries for CMake using `add_library(avcodec STATIC IMPORTED)` and point their properties utilizing `set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION ...)`. Do this for all downloaded FFmpeg core structures.
+4. **Android Media Framework**: Link the requisite NDK acceleration API tools like `libmediandk.so` in `target_link_libraries` so FFmpeg can decode natively on Android silicon.
+5. **Java/Kotlin Invoke**: Craft your own local JNI wrappers in C++ (`native()` functions) to interface with the extracted headers within your Android environment!
+
 
 
 ---
