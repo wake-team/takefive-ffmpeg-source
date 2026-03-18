@@ -3,6 +3,11 @@ name: Build TakeFive FFmpeg
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'scripts/**'
+      - 'build_takefive.sh'
+      - 'patch_ffmpeg.sh'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:

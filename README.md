@@ -45,7 +45,19 @@ This engine is licensed under the **GNU Lesser General Public License (LGPL) ver
 
 ## 📦 Integration
 
-Compiled binaries are available in the [GitHub Actions Release Tab](https://github.com/wake-team/takefive-ffmpeg-source/actions). 
+Compiled binaries are available in the [GitHub Actions Release Tab](https://github.com/wake-team/takefive-ffmpeg-source/actions).
+
+### How to use this in your Mobile App Building Process
+
+Because this engine creates pure, precompiled static libraries (e.g., `libavcodec.a`, `libavformat.a`) rather than relying on on-the-fly source builds, your mobile application build pipeline remains incredibly fast and immune to C-compiler breaks.
+
+#### iOS Integration (Xcode / React Native iOS)
+1. **Download the Artifact**: Navigate to the latest successful GitHub Action run and download the `takefive-ffmpeg-ios-arm64.zip` artifact.
+2. **Extract**: Unzip the folder to reveal the `lib/` (static `.a` files) and `include/` (C headers) directories.
+3. **Import to Xcode**: Drag and drop the `lib` folder completely into your Xcode project's *Frameworks, Libraries, and Embedded Content* section. 
+4. **Header Search Paths**: In your Xcode Build Settings, add the path to the extracted `include/` folder to the **Header Search Paths** (`HEADER_SEARCH_PATHS`) setting so your Objective-C or Swift Bridging Headers can locate `<libavutil/avutil.h>`, etc.
+5. **Link Dependencies**: Ensure you dynamically link the `VideoToolbox.framework`, `AudioToolbox.framework`, `CoreMedia.framework`, and `AVFoundation.framework` in Xcode, as FFmpeg relies on these Apple-native libraries for hardware acceleration.
+6. **Done**: You can now import FFmpeg headers and invoke its C-API directly within your iOS app bundle.
 
 
 
