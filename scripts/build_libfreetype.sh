@@ -22,6 +22,8 @@ if [ -f Makefile ]; then
     make distclean || true
 fi
 
+# Pass MAKE=make explicitly to avoid macOS make evaluation hangs
+# Pipe /dev/null to prevent interactive prompts blocking the script
 ./configure \
     --host=arm-apple-darwin \
     --prefix="${OUT_DIR}" \
@@ -31,9 +33,10 @@ fi
     --without-png \
     --without-zlib \
     --without-bzip2 \
+    MAKE="make" \
     CC="${CC}" \
     CFLAGS="${CFLAGS}" \
-    LDFLAGS="${CFLAGS}"
+    LDFLAGS="${CFLAGS}" < /dev/null
 
 make -j$(sysctl -n hw.ncpu)
 make install

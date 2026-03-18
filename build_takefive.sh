@@ -25,8 +25,16 @@ FFMPEG_LDFLAGS=("-arch arm64 -miphoneos-version-min=15.1")
 # Ensure deps dir exists
 mkdir -p "${DEPS_BASE_DIR}"
 
+# 4. FIX macOS DYLD FREEZE
+# Exporting TMPDIR to a local path bypasses EndpointSecurity bugs on /var/folders
+export TMPDIR="${BASE_DIR}/build_tmp"
+mkdir -p "${TMPDIR}"
+
 # Fetch all sources first
 bash ./scripts/fetch_deps.sh
+
+# 5. Fix FFmpeg Makefiles and scripts to bypass macOS execution bugs
+bash ./patch_ffmpeg.sh
 
 for arg in "$@"; do
   case $arg in
@@ -42,6 +50,7 @@ for arg in "$@"; do
         FFMPEG_EXTRA_FLAGS+=("$arg")
         FFMPEG_CFLAGS+=("-I${LIB_PATH}/include")
         FFMPEG_LDFLAGS+=("-L${LIB_PATH}/lib")
+        export PKG_CONFIG_PATH="${LIB_PATH}/lib/pkgconfig:${PKG_CONFIG_PATH}"
       else
         echo "⚠️  No build script found for ${LIB_NAME}, skipping..."
       fi
@@ -53,7 +62,8 @@ done
 cd "${SRC_DIR}"
 echo "⚙️  Configuring FFmpeg with injected flags: ${FFMPEG_EXTRA_FLAGS[*]}"
 
-arch -arm64 env TMPDIR=/tmp bash ./configure \
+mkdir -p "${BASE_DIR}/build_tmp"
+arch -arm64 env TMPDIR="${BASE_DIR}/build_tmp" bash ./configure \
     --prefix="${PREFIX}" \
     --enable-cross-compile \
     --target-os=darwin \
@@ -66,7 +76,7 @@ arch -arm64 env TMPDIR=/tmp bash ./configure \
     --disable-programs --disable-doc --disable-debug --disable-asm \
     --enable-pic --enable-videotoolbox --enable-avfoundation --disable-audiotoolbox \
     --enable-small --enable-version3 --disable-shared --enable-static \
-    "${FFMPEG_EXTRA_FLAGS[@]}"
+    "${FFMPEG_EXTRA_FLAGS[@]}" < /dev/null
 
 make -j$(sysctl -n hw.ncpu)
 make install

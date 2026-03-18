@@ -3,7 +3,7 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SRC_DIR="${BASE_DIR}/src/openh264"
-OUT_DIR="${BASE_DIR}/takefive_prebuilt/dependencies/openh264"
+OUT_DIR="${BASE_DIR}/takefive_prebuilt/dependencies/libopenh264"
 SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
 
 echo "----------------------------------------------------------"

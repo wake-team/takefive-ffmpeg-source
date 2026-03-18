@@ -33,12 +33,16 @@ fetch_lib() {
 
 mkdir -p "${SRC_DIR}"
 
+# Fetch FFmpeg Main Repository
+FFMPEG_TAG="n6.0"
+fetch_lib "ffmpeg" "https://github.com/FFmpeg/FFmpeg" "${FFMPEG_TAG}"
+
 # Fetch Core Dependencies (LGPL Compliant)
 fetch_lib "lame" "https://github.com/arthenica/lame" "${LAME_TAG}"
 fetch_lib "openh264" "https://github.com/arthenica/openh264" "${OPENH264_TAG}"
 fetch_lib "libass" "https://github.com/arthenica/libass" "${LIBASS_TAG}"
 fetch_lib "freetype" "https://github.com/arthenica/freetype2" "${FREETYPE_TAG}"
-fetch_lib "fribidi" "https://github.com/github.com/fribidi/fribidi" "${FRIBIDI_TAG}" || fetch_lib "fribidi" "https://github.com/arthenica/fribidi" "${FRIBIDI_TAG}"
+fetch_lib "fribidi" "https://github.com/fribidi/fribidi" "${FRIBIDI_TAG}" || fetch_lib "fribidi" "https://github.com/arthenica/fribidi" "${FRIBIDI_TAG}"
 fetch_lib "harfbuzz" "https://github.com/harfbuzz/harfbuzz" "${HARFBUZZ_TAG}" || fetch_lib "harfbuzz" "https://github.com/arthenica/harfbuzz" "${HARFBUZZ_TAG}"
 fetch_lib "expat" "https://github.com/libexpat/libexpat" "${EXPAT_TAG}" || fetch_lib "expat" "https://github.com/arthenica/libexpat" "${EXPAT_TAG}"
 

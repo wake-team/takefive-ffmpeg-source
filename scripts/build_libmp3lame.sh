@@ -3,7 +3,7 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SRC_DIR="${BASE_DIR}/src/lame/lame"
-OUT_DIR="${BASE_DIR}/takefive_prebuilt/dependencies/lame"
+OUT_DIR="${BASE_DIR}/takefive_prebuilt/dependencies/libmp3lame"
 SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
 CC=$(xcrun --sdk iphoneos -f clang)
 CFLAGS="-arch arm64 -miphoneos-version-min=15.1 -isysroot ${SDK_PATH} -fembed-bitcode -Wno-implicit-function-declaration"

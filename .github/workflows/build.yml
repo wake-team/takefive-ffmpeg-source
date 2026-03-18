@@ -1,6 +1,8 @@
 name: Build TakeFive FFmpeg
 
 on:
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -21,12 +23,7 @@ jobs:
         chmod +x *.sh scripts/*.sh
         ./build_takefive.sh \
           --enable-libmp3lame \
-          --enable-libopenh264 \
-          --enable-libfreetype \
-          --enable-libfribidi \
-          --enable-libharfbuzz \
-          --enable-libexpat \
-          --enable-libass
+          --enable-libopenh264
 
     - name: Package Artifacts
       run: |
