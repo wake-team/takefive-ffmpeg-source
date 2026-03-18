@@ -8,4 +8,6 @@ tools/android/.gradle/
 takefive_prebuilt/
 src/*
 !src/.gitignore
-!src/ffmpeg/
+artifacts/
+build_tmp/
+test.txt
