@@ -11,3 +11,6 @@ src/*
 artifacts/
 build_tmp/
 test.txt
+create_module.exp
+expo_tmp/
+react-native/takefive-ffmpeg-kit.podspec

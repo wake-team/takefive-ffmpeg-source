@@ -18,7 +18,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <ffmpegkit/FFmpegKitConfig.h>
+#import "FFmpegKitConfig.h"
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 

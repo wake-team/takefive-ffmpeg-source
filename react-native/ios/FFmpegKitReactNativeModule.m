@@ -22,11 +22,11 @@
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
 
-#import <ffmpegkit/FFmpegKit.h>
-#import <ffmpegkit/FFprobeKit.h>
-#import <ffmpegkit/ArchDetect.h>
-#import <ffmpegkit/MediaInformation.h>
-#import <ffmpegkit/Packages.h>
+#import "FFmpegKit.h"
+#import "FFprobeKit.h"
+#import "ArchDetect.h"
+#import "MediaInformation.h"
+#import "Packages.h"
 
 static NSString *const PLATFORM_NAME = @"ios";
 

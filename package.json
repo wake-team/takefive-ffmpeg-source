@@ -1,0 +1,33 @@
+{
+  "name": "takefive-ffmpeg-kit",
+  "version": "1.0.0",
+  "description": "TakeFive custom FFmpeg Kit for React Native — self-hosted prebuilt static libraries",
+  "main": "react-native/src/index",
+  "types": "react-native/src/index.d.ts",
+  "react-native": "react-native/src/index",
+  "source": "react-native/src/index",
+  "scripts": {
+    "test": "jest",
+    "build:ios": "bash build_takefive.sh --enable-libmp3lame --enable-libopenh264",
+    "postinstall": "bash scripts/postinstall.sh"
+  },
+  "keywords": [
+    "react-native",
+    "android",
+    "ffmpeg",
+    "ffmpeg-kit",
+    "ios",
+    "takefive"
+  ],
+  "repository": "https://github.com/wake-team/takefive-ffmpeg-source",
+  "author": "TakeFive Team",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/wake-team/takefive-ffmpeg-source/issues"
+  },
+  "homepage": "https://github.com/wake-team/takefive-ffmpeg-source",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  }
+}
