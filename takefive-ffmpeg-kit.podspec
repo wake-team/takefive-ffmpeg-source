@@ -16,12 +16,26 @@ Pod::Spec.new do |s|
 
   s.source = { :git => "https://github.com/wake-team/takefive-ffmpeg-source.git", :tag => "v#{s.version}" }
 
+  # Download prebuilt static libs from GitHub release (skipped if already present, e.g. local file: ref)
+  s.prepare_command = <<-CMD
+    if [ ! -d "takefive_prebuilt/arm64/include/libavutil" ]; then
+      VERSION="#{s.version}"
+      PREBUILT_URL="https://github.com/wake-team/takefive-ffmpeg-source/releases/download/v${VERSION}/takefive_prebuilt.tar.gz"
+      echo "Downloading TakeFive prebuilt from ${PREBUILT_URL}..."
+      curl -L "${PREBUILT_URL}" -o takefive_prebuilt.tar.gz
+      tar -xzf takefive_prebuilt.tar.gz
+      rm takefive_prebuilt.tar.gz
+    else
+      echo "Prebuilt libraries already present, skipping download."
+    fi
+  CMD
+
   s.dependency "React-Core"
 
   # ── Source files (all paths relative to podspec) ──
   s.source_files = [
     'react-native/ios/FFmpegKitReactNativeModule.h',
-    'react-native/ios/FFmpegKitReactNativeModule.m',
+    'react-native/ios/FFmpegKitReactNativeModule.mm',
     'apple/src/*.h',
     'apple/src/*.m',
     'apple/src/fftools_*.c',

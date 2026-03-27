@@ -81,4 +81,12 @@ arch -arm64 env TMPDIR="${BASE_DIR}/build_tmp" bash ./configure \
 make -j$(sysctl -n hw.ncpu)
 make install
 
+# Copy internal FFmpeg headers not installed by `make install` but required by fftools source files
+echo "📋 Copying internal FFmpeg headers..."
+for h in thread.h internal.h libm.h getenv_utf8.h wchar_filename.h; do
+  if [ -f "${SRC_DIR}/libavutil/${h}" ]; then
+    cp "${SRC_DIR}/libavutil/${h}" "${PREFIX}/include/libavutil/${h}"
+  fi
+done
+
 echo "✅ Dynamic Build Successful! Files in ${PREFIX}"
