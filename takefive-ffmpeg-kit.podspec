@@ -2,9 +2,6 @@ require "json"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
-prebuilt_dir  = File.join(__dir__, 'takefive_prebuilt')
-apple_src_dir = File.join(__dir__, 'apple', 'src')
-
 Pod::Spec.new do |s|
   s.name         = "takefive-ffmpeg-kit"
   s.version      = package["version"]
@@ -21,86 +18,75 @@ Pod::Spec.new do |s|
 
   s.dependency "React-Core"
 
-  # ── Source files ──
-  # 1. React Native bridge (ObjC module)
-  # 2. FFmpegKit ObjC wrapper layer (apple/src/*.h, *.m)
-  # 3. FFmpegKit modified fftools C source (apple/src/fftools_*.c, fftools_*.h)
-  #
-  # We EXCLUDE the raw upstream ffmpeg CLI source files (ffmpeg.c, ffprobe.c,
-  # ffplay.c, cmdutils.c, etc.) because the fftools_* versions are the patched
-  # replacements used by ffmpeg-kit. We also exclude Makefile.* and ffplay_renderer
-  # files since we don't use SDL/libplacebo.
+  # ── Source files (all paths relative to podspec) ──
   s.source_files = [
     'react-native/ios/FFmpegKitReactNativeModule.h',
     'react-native/ios/FFmpegKitReactNativeModule.m',
-    "#{apple_src_dir}/*.h",
-    "#{apple_src_dir}/*.m",
-    "#{apple_src_dir}/fftools_*.c",
-    "#{apple_src_dir}/fftools_*.h",
+    'apple/src/*.h',
+    'apple/src/*.m',
+    'apple/src/fftools_*.c',
+    'apple/src/fftools_*.h',
   ]
 
   s.exclude_files = [
-    # Raw upstream FFmpeg CLI tools — conflict with fftools_* modified versions
-    "#{apple_src_dir}/ffmpeg.c",
-    "#{apple_src_dir}/ffmpeg.h",
-    "#{apple_src_dir}/ffmpeg_dec.c",
-    "#{apple_src_dir}/ffmpeg_demux.c",
-    "#{apple_src_dir}/ffmpeg_enc.c",
-    "#{apple_src_dir}/ffmpeg_filter.c",
-    "#{apple_src_dir}/ffmpeg_hw.c",
-    "#{apple_src_dir}/ffmpeg_mux.c",
-    "#{apple_src_dir}/ffmpeg_mux.h",
-    "#{apple_src_dir}/ffmpeg_mux_init.c",
-    "#{apple_src_dir}/ffmpeg_opt.c",
-    "#{apple_src_dir}/ffmpeg_sched.c",
-    "#{apple_src_dir}/ffmpeg_sched.h",
-    "#{apple_src_dir}/ffmpeg_utils.h",
-    "#{apple_src_dir}/ffprobe.c",
-    "#{apple_src_dir}/ffplay.c",
-    "#{apple_src_dir}/ffplay_renderer.c",
-    "#{apple_src_dir}/ffplay_renderer.h",
-    "#{apple_src_dir}/cmdutils.c",
-    "#{apple_src_dir}/cmdutils.h",
-    "#{apple_src_dir}/fopen_utf8.h",
-    "#{apple_src_dir}/opt_common.c",
-    "#{apple_src_dir}/opt_common.h",
-    "#{apple_src_dir}/objpool.c",
-    "#{apple_src_dir}/objpool.h",
-    "#{apple_src_dir}/sync_queue.c",
-    "#{apple_src_dir}/sync_queue.h",
-    "#{apple_src_dir}/thread_queue.c",
-    "#{apple_src_dir}/thread_queue.h",
-    # Build system files
-    "#{apple_src_dir}/Makefile.*",
+    'apple/src/ffmpeg.c',
+    'apple/src/ffmpeg.h',
+    'apple/src/ffmpeg_dec.c',
+    'apple/src/ffmpeg_demux.c',
+    'apple/src/ffmpeg_enc.c',
+    'apple/src/ffmpeg_filter.c',
+    'apple/src/ffmpeg_hw.c',
+    'apple/src/ffmpeg_mux.c',
+    'apple/src/ffmpeg_mux.h',
+    'apple/src/ffmpeg_mux_init.c',
+    'apple/src/ffmpeg_opt.c',
+    'apple/src/ffmpeg_sched.c',
+    'apple/src/ffmpeg_sched.h',
+    'apple/src/ffmpeg_utils.h',
+    'apple/src/ffprobe.c',
+    'apple/src/ffplay.c',
+    'apple/src/ffplay_renderer.c',
+    'apple/src/ffplay_renderer.h',
+    'apple/src/cmdutils.c',
+    'apple/src/cmdutils.h',
+    'apple/src/fopen_utf8.h',
+    'apple/src/opt_common.c',
+    'apple/src/opt_common.h',
+    'apple/src/objpool.c',
+    'apple/src/objpool.h',
+    'apple/src/sync_queue.c',
+    'apple/src/sync_queue.h',
+    'apple/src/thread_queue.c',
+    'apple/src/thread_queue.h',
+    'apple/src/Makefile.*',
   ]
 
   s.public_header_files = [
-    "#{apple_src_dir}/*.h",
+    'apple/src/*.h',
     'react-native/ios/FFmpegKitReactNativeModule.h',
   ]
 
-  # ── Prebuilt static libraries ──
+  # ── Prebuilt static libraries (relative paths) ──
   s.vendored_libraries = [
-    # FFmpeg core
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libavcodec.a'),
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libavdevice.a'),
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libavfilter.a'),
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libavformat.a'),
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libavutil.a'),
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libswresample.a'),
-    File.join(prebuilt_dir, 'arm64', 'lib', 'libswscale.a'),
-    # Dependencies
-    File.join(prebuilt_dir, 'dependencies', 'lame', 'lib', 'libmp3lame.a'),
-    File.join(prebuilt_dir, 'dependencies', 'libopenh264', 'lib', 'libopenh264.a'),
+    'takefive_prebuilt/arm64/lib/libavcodec.a',
+    'takefive_prebuilt/arm64/lib/libavdevice.a',
+    'takefive_prebuilt/arm64/lib/libavfilter.a',
+    'takefive_prebuilt/arm64/lib/libavformat.a',
+    'takefive_prebuilt/arm64/lib/libavutil.a',
+    'takefive_prebuilt/arm64/lib/libswresample.a',
+    'takefive_prebuilt/arm64/lib/libswscale.a',
+    'takefive_prebuilt/dependencies/lame/lib/libmp3lame.a',
+    'takefive_prebuilt/dependencies/libopenh264/lib/libopenh264.a',
   ]
 
   # ── Header search paths ──
+  # Use ${PODS_TARGET_SRCROOT} which resolves to the pod's root directory at build time
   s.pod_target_xcconfig = {
     'HEADER_SEARCH_PATHS' => [
-      "\"#{File.join(prebuilt_dir, 'arm64', 'include')}\"",
-      "\"#{File.join(prebuilt_dir, 'dependencies', 'lame', 'include')}\"",
-      "\"#{File.join(prebuilt_dir, 'dependencies', 'libopenh264', 'include')}\"",
-      "\"#{apple_src_dir}\"",
+      '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/arm64/include"',
+      '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/lame/include"',
+      '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/libopenh264/include"',
+      '"${PODS_TARGET_SRCROOT}/apple/src"',
     ].join(' '),
     'OTHER_LDFLAGS' => '-ObjC -lz -lbz2 -liconv',
     'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) HAVE_LIB_CONFIG_H=0',
