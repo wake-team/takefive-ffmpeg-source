@@ -17,6 +17,9 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: write
+
 jobs:
   build-ios:
     name: Build iOS arm64
