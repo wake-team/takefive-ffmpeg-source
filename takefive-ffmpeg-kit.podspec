@@ -40,7 +40,15 @@ Pod::Spec.new do |s|
     'apple/src/*.m',
     'apple/src/fftools_*.c',
     'apple/src/fftools_*.h',
+    # config.h must be listed here so CocoaPods adds it to own-target-headers.hmap
+    # (searched at priority 2). Without this, the all-target-headers.hmap (priority 3)
+    # resolves "config.h" to yoga's Config.h on macOS's case-insensitive filesystem,
+    # which pulls in <bitset> and breaks pure C compilation units.
+    'takefive_prebuilt/arm64/include/config.h',
   ]
+
+  # Mark config.h as private (not exported) so it doesn't pollute the public API
+  s.private_header_files = ['takefive_prebuilt/arm64/include/config.h']
 
   s.exclude_files = [
     'apple/src/ffmpeg.c',
@@ -89,22 +97,26 @@ Pod::Spec.new do |s|
     'takefive_prebuilt/arm64/lib/libavutil.a',
     'takefive_prebuilt/arm64/lib/libswresample.a',
     'takefive_prebuilt/arm64/lib/libswscale.a',
-    'takefive_prebuilt/dependencies/lame/lib/libmp3lame.a',
+    'takefive_prebuilt/dependencies/libmp3lame/lib/libmp3lame.a',
     'takefive_prebuilt/dependencies/libopenh264/lib/libopenh264.a',
   ]
 
   # ── Header search paths ──
-  # Use ${PODS_TARGET_SRCROOT} which resolves to the pod's root directory at build time
+  # IMPORTANT: takefive_prebuilt paths must come FIRST so that FFmpeg internal
+  # headers (e.g. libavutil/thread.h) which do #include "config.h" find our
+  # config.h (placed at takefive_prebuilt/arm64/include/config.h and
+  # takefive_prebuilt/arm64/include/libavutil/config.h) before the compiler
+  # accidentally resolves it to yoga's Config.h on macOS's case-insensitive FS.
   s.pod_target_xcconfig = {
     'HEADER_SEARCH_PATHS' => [
       '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/arm64/include"',
-      '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/lame/include"',
+      '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/libmp3lame/include"',
       '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/libopenh264/include"',
       '"${PODS_TARGET_SRCROOT}/apple/src"',
     ].join(' '),
     'OTHER_LDFLAGS' => '-ObjC -lz -lbz2 -liconv',
-    'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) HAVE_LIB_CONFIG_H=0',
-    # Disable Clang modules so C++ standard library headers (<bitset> etc.)
+    'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) HAVE_LIB_CONFIG_H=0 FFMPEG_KIT_BUILD_DATE=20240101',
+    # Disable Clang modules so C++ stdlib headers (<bitset> etc.)
     # resolve as textual includes when ObjC++ files pull in React/yoga headers.
     'CLANG_ENABLE_MODULES' => 'NO',
   }
