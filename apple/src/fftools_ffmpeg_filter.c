@@ -490,7 +490,7 @@ fail:
 
 int init_complex_filtergraph(FilterGraph *fg)
 {
-    AVFilterInOut *inputs, *outputs, *cur;
+    AVFilterInOut *inputs = NULL, *outputs = NULL, *cur;
     AVFilterGraph *graph;
     int ret = 0;
 
@@ -1135,7 +1135,7 @@ static int graph_is_meta(AVFilterGraph *graph)
 
 int configure_filtergraph(FilterGraph *fg)
 {
-    AVFilterInOut *inputs, *outputs, *cur;
+    AVFilterInOut *inputs = NULL, *outputs = NULL, *cur;
     int ret, i, simple = filtergraph_is_simple(fg);
     const char *graph_desc = simple ? fg->outputs[0]->ost->avfilter :
                                       fg->graph_desc;
