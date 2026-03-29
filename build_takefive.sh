@@ -76,6 +76,7 @@ arch -arm64 env TMPDIR="${BASE_DIR}/build_tmp" bash ./configure \
     --disable-programs --disable-doc --disable-debug --disable-asm \
     --enable-pic --enable-videotoolbox --enable-avfoundation --disable-audiotoolbox \
     --enable-small --enable-version3 --disable-shared --enable-static \
+    --enable-filter=eq,colorbalance,scale,pad,setsar,fps,trim,setpts,atrim,asetpts,atempo,concat,anullsrc,aloop,volume,sidechaincompress,amix,aevalsrc \
     "${FFMPEG_EXTRA_FLAGS[@]}" < /dev/null
 
 make -j$(sysctl -n hw.ncpu)
