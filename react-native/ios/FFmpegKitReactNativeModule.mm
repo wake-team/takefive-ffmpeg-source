@@ -558,7 +558,7 @@ RCT_EXPORT_METHOD(clearSessions:(RCTPromiseResolveBlock)resolve rejecter:(RCTPro
 }
 
 RCT_EXPORT_METHOD(getSessionsByState:(int)sessionState resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    resolve([FFmpegKitReactNativeModule toSessionArray:[FFmpegKitConfig getSessionsByState:sessionState]]);
+    resolve([FFmpegKitReactNativeModule toSessionArray:[FFmpegKitConfig getSessionsByState:(SessionState)sessionState]]);
 }
 
 RCT_EXPORT_METHOD(getLogRedirectionStrategy:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -566,7 +566,7 @@ RCT_EXPORT_METHOD(getLogRedirectionStrategy:(RCTPromiseResolveBlock)resolve reje
 }
 
 RCT_EXPORT_METHOD(setLogRedirectionStrategy:(int)logRedirectionStrategy resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    [FFmpegKitConfig setLogRedirectionStrategy:logRedirectionStrategy];
+    [FFmpegKitConfig setLogRedirectionStrategy:(LogRedirectionStrategy)logRedirectionStrategy];
     resolve(nil);
 }
 

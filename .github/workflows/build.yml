@@ -4,16 +4,10 @@ on:
   push:
     tags:
       - 'v*'
-    branches: [ "main" ]
-    paths:
-      - 'scripts/**'
-      - 'build_takefive.sh'
-      - 'patch_ffmpeg.sh'
-      - '.github/workflows/**'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g. 1.2.0) — leave blank to skip release creation'
+        description: 'Release version — reads from package.json if blank'
         required: false
         default: ''
 
@@ -57,13 +51,13 @@ jobs:
       run: |
         if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
           echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-          echo "create_release=true" >> "$GITHUB_OUTPUT"
         elif [[ -n "${{ github.event.inputs.version }}" ]]; then
           echo "tag=v${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
-          echo "create_release=true" >> "$GITHUB_OUTPUT"
         else
-          echo "create_release=false" >> "$GITHUB_OUTPUT"
+          PKG_VERSION=$(node -e "process.stdout.write(require('./package.json').version)")
+          echo "tag=v${PKG_VERSION}" >> "$GITHUB_OUTPUT"
         fi
+        echo "create_release=true" >> "$GITHUB_OUTPUT"
 
     - name: Create GitHub Release
       if: steps.version.outputs.create_release == 'true'
