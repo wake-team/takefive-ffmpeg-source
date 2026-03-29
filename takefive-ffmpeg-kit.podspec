@@ -104,6 +104,9 @@ Pod::Spec.new do |s|
     ].join(' '),
     'OTHER_LDFLAGS' => '-ObjC -lz -lbz2 -liconv',
     'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) HAVE_LIB_CONFIG_H=0',
+    # Disable Clang modules so C++ standard library headers (<bitset> etc.)
+    # resolve as textual includes when ObjC++ files pull in React/yoga headers.
+    'CLANG_ENABLE_MODULES' => 'NO',
   }
 
   # ── System frameworks required by FFmpeg ──
