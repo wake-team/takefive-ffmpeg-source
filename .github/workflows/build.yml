@@ -32,7 +32,8 @@ jobs:
         chmod +x *.sh scripts/*.sh
         ./build_takefive.sh \
           --enable-libmp3lame \
-          --enable-libopenh264
+          --enable-libopenh264 \
+          --enable-libfreetype
 
     - name: Package Artifacts
       run: |
