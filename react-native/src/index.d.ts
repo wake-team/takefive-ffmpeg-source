@@ -1,4 +1,4 @@
-declare module 'ffmpeg-kit-react-native' {
+declare module 'takefive-ffmpeg-kit' {
 
   export abstract class AbstractSession implements Session {
 
