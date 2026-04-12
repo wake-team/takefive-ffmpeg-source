@@ -35,6 +35,30 @@ jobs:
           --enable-libopenh264 \
           --enable-libfreetype
 
+    - name: Diagnose freetype pkg-config
+      if: always()
+      run: |
+        echo "=== PKG_CONFIG_PATH ==="
+        echo "${PKG_CONFIG_PATH}"
+
+        PC_FILE="takefive_prebuilt/dependencies/libfreetype/lib/pkgconfig/freetype2.pc"
+        echo ""
+        echo "=== freetype2.pc ==="
+        if [ -f "${PC_FILE}" ]; then
+          cat "${PC_FILE}"
+        else
+          echo "FILE NOT FOUND at ${PC_FILE}"
+          echo "Contents of pkgconfig dir (if exists):"
+          ls takefive_prebuilt/dependencies/libfreetype/lib/pkgconfig/ 2>/dev/null || echo "  dir missing"
+        fi
+
+        echo ""
+        echo "=== pkg-config check ==="
+        PKG_CONFIG_PATH="takefive_prebuilt/dependencies/libfreetype/lib/pkgconfig:${PKG_CONFIG_PATH}" \
+          pkg-config --exists freetype2 && echo "pkg-config OK" || echo "pkg-config FAILED"
+        PKG_CONFIG_PATH="takefive_prebuilt/dependencies/libfreetype/lib/pkgconfig:${PKG_CONFIG_PATH}" \
+          pkg-config --cflags --libs freetype2 2>&1 || true
+
     - name: Package Artifacts
       run: |
         mkdir -p artifacts
