@@ -99,6 +99,7 @@ Pod::Spec.new do |s|
     'takefive_prebuilt/arm64/lib/libswscale.a',
     'takefive_prebuilt/dependencies/libmp3lame/lib/libmp3lame.a',
     'takefive_prebuilt/dependencies/libopenh264/lib/libopenh264.a',
+    'takefive_prebuilt/dependencies/libfreetype/lib/libfreetype.a',
   ]
 
   # ── Header search paths ──
@@ -112,6 +113,7 @@ Pod::Spec.new do |s|
       '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/arm64/include"',
       '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/libmp3lame/include"',
       '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/libopenh264/include"',
+      '"${PODS_TARGET_SRCROOT}/takefive_prebuilt/dependencies/libfreetype/include"',
       '"${PODS_TARGET_SRCROOT}/apple/src"',
     ].join(' '),
     'OTHER_LDFLAGS' => '-ObjC -lz -lbz2 -liconv',
