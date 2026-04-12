@@ -1,6 +1,6 @@
 {
   "name": "takefive-ffmpeg-kit",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "TakeFive custom FFmpeg Kit for React Native — self-hosted prebuilt static libraries",
   "main": "react-native/src/index",
   "types": "react-native/src/index.d.ts",
