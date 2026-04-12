@@ -33,6 +33,7 @@ fi
     --without-png \
     --without-zlib \
     --without-bzip2 \
+    --with-brotli=no \
     MAKE="make" \
     CC="${CC}" \
     CFLAGS="${CFLAGS}" \
@@ -40,5 +41,20 @@ fi
 
 make -j$(sysctl -n hw.ncpu)
 make install
+
+# Strip all external Requires from the .pc file so pkg-config doesn't chase
+# system libraries (brotli, zlib, etc.) that aren't in our PKG_CONFIG_PATH.
+# We don't use WOFF2/brotli compressed fonts on mobile so this is safe.
+PC_FILE="${OUT_DIR}/lib/pkgconfig/freetype2.pc"
+if [ -f "${PC_FILE}" ]; then
+    sed -i.bak 's/^Requires:.*$/Requires:/'               "${PC_FILE}"
+    sed -i.bak 's/^Requires\.private:.*$/Requires.private:/' "${PC_FILE}"
+    sed -i.bak 's/^Libs\.private:.*$/Libs.private:/'       "${PC_FILE}"
+    echo "📝 Patched freetype2.pc (removed external Requires):"
+    cat "${PC_FILE}"
+else
+    echo "⚠️  freetype2.pc not found at ${PC_FILE}"
+    exit 1
+fi
 
 echo "✅ FreeType build successful! Files in ${OUT_DIR}"

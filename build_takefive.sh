@@ -63,7 +63,7 @@ cd "${SRC_DIR}"
 echo "⚙️  Configuring FFmpeg with injected flags: ${FFMPEG_EXTRA_FLAGS[*]}"
 
 mkdir -p "${BASE_DIR}/build_tmp"
-arch -arm64 env TMPDIR="${BASE_DIR}/build_tmp" bash ./configure \
+arch -arm64 env TMPDIR="${BASE_DIR}/build_tmp" PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
     --prefix="${PREFIX}" \
     --enable-cross-compile \
     --target-os=darwin \
