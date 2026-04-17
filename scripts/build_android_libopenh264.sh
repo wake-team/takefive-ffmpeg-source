@@ -46,7 +46,17 @@ make -j$(nproc) \
   PREFIX="${OUT_DIR}" \
   install-static
 
-# Generate a minimal pkg-config file for FFmpeg's configure
+# Manually copy lib/headers if install-static didn't place them (Makefile version variance)
+mkdir -p "${OUT_DIR}/lib" "${OUT_DIR}/include/wels"
+if [ ! -f "${OUT_DIR}/lib/libopenh264.a" ]; then
+  echo "install-static missed the .a — copying manually..."
+  find "${SRC_DIR}" -name "libopenh264.a" | head -1 | xargs -I{} cp {} "${OUT_DIR}/lib/"
+fi
+if [ -z "$(ls -A "${OUT_DIR}/include/wels" 2>/dev/null)" ]; then
+  cp "${SRC_DIR}"/codec/api/wels/*.h "${OUT_DIR}/include/wels/"
+fi
+
+# Generate pkg-config file for FFmpeg's configure (always overwrite to ensure correct path)
 mkdir -p "${OUT_DIR}/lib/pkgconfig"
 cat > "${OUT_DIR}/lib/pkgconfig/openh264.pc" << EOF
 prefix=${OUT_DIR}
@@ -60,5 +70,9 @@ Version: 2.3.1
 Libs: -L\${libdir} -lopenh264
 Cflags: -I\${includedir}
 EOF
+
+echo "=== OpenH264 install verification ==="
+ls -la "${OUT_DIR}/lib/" || true
+cat "${OUT_DIR}/lib/pkgconfig/openh264.pc" || true
 
 echo "✅ OpenH264 (Android) build successful! Files in ${OUT_DIR}"

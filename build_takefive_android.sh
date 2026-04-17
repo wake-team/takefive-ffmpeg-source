@@ -65,7 +65,14 @@ for arg in "$@"; do
   esac
 done
 
-# 7. Configure & Build FFmpeg
+# 7. Verify dependency pkg-config files before configure
+echo "=== PKG_CONFIG_PATH: ${PKG_CONFIG_PATH} ==="
+for pcdir in $(echo "${PKG_CONFIG_PATH}" | tr ':' '\n'); do
+  echo "--- ${pcdir} ---"
+  ls "${pcdir}"/*.pc 2>/dev/null || echo "  (no .pc files)"
+done
+
+# 8. Configure & Build FFmpeg
 cd "${SRC_DIR}"
 echo "⚙️  Configuring FFmpeg for Android arm64-v8a..."
 
