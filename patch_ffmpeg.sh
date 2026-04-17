@@ -33,7 +33,15 @@ INNER_EOF
 chmod +x src/ffmpeg/ffbuild/pkgconfig_generate.sh
 
 # 3. Disconnect version.sh from Makefile
-sed -i '' 's/\$(M)\$(VERSION_SH) \$(SRC_PATH) libavutil\/ffversion.h \$(EXTRA_VERSION)/\$(Q)echo "#define FFMPEG_VERSION \\"v6.0-takefive\\"" > libavutil\/ffversion.h/g' src/ffmpeg/Makefile
+if [[ "$(uname)" == "Darwin" ]]; then
+  sed -i '' 's/\$(M)\$(VERSION_SH) \$(SRC_PATH) libavutil\/ffversion.h \$(EXTRA_VERSION)/\$(Q)echo "#define FFMPEG_VERSION \\"v6.0-takefive\\"" > libavutil\/ffversion.h/g' src/ffmpeg/Makefile
+else
+  sed -i 's/\$(M)\$(VERSION_SH) \$(SRC_PATH) libavutil\/ffversion.h \$(EXTRA_VERSION)/\$(Q)echo "#define FFMPEG_VERSION \\"v6.0-takefive\\"" > libavutil\/ffversion.h/g' src/ffmpeg/Makefile
+fi
 
 # 4. Disconnect pkgconfig generate logic
-sed -i '' 's/\$\$(M) \$\$(SRC_PATH)\/ffbuild\/pkgconfig_generate.sh \$(NAME) "\$(DESC)"/\$\$(Q)echo "" > \$\$@/g' src/ffmpeg/ffbuild/library.mak
+if [[ "$(uname)" == "Darwin" ]]; then
+  sed -i '' 's/\$\$(M) \$\$(SRC_PATH)\/ffbuild\/pkgconfig_generate.sh \$(NAME) "\$(DESC)"/\$\$(Q)echo "" > \$\$@/g' src/ffmpeg/ffbuild/library.mak
+else
+  sed -i 's/\$\$(M) \$\$(SRC_PATH)\/ffbuild\/pkgconfig_generate.sh \$(NAME) "\$(DESC)"/\$\$(Q)echo "" > \$\$@/g' src/ffmpeg/ffbuild/library.mak
+fi
