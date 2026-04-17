@@ -16,7 +16,7 @@ CC="${TOOLCHAIN}/bin/${TARGET}${API}-clang"
 CXX="${TOOLCHAIN}/bin/${TARGET}${API}-clang++"
 AR="${TOOLCHAIN}/bin/llvm-ar"
 SYSROOT="${TOOLCHAIN}/sysroot"
-CFLAGS="--sysroot=${SYSROOT} -target ${TARGET}${API} -DHAVE_NEON_AARCH64 -DANDROID_NDK"
+CFLAGS="--sysroot=${SYSROOT} -target ${TARGET}${API} -DHAVE_NEON_AARCH64 -DANDROID_NDK -I${ANDROID_NDK_ROOT}/sources/android/cpufeatures"
 
 echo "----------------------------------------------------------"
 echo "🔨 Building OpenH264 for Android arm64-v8a"

@@ -1,0 +1,85 @@
+name: Build Android
+
+on:
+  push:
+    tags:
+      - 'v*'
+    paths:
+      - 'build_takefive_android.sh'
+      - 'patch_ffmpeg.sh'
+      - 'scripts/fetch_deps.sh'
+      - 'scripts/build_android_*.sh'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version — reads from package.json if blank'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    name: Build Android arm64-v8a
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update -q
+        sudo apt-get install -y --no-install-recommends \
+          autoconf automake libtool pkg-config nasm make git curl
+
+    - name: Install Android NDK
+      run: |
+        NDK_VERSION=27.2.12479018
+        echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "ndk;${NDK_VERSION}"
+        echo "ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
+
+    - name: Build Android arm64-v8a
+      run: |
+        chmod +x *.sh scripts/*.sh
+        ./build_takefive_android.sh \
+          --enable-libmp3lame \
+          --enable-libopenh264 \
+          --enable-libfreetype
+
+    - name: Package Artifacts
+      run: |
+        mkdir -p artifacts
+        tar -czf artifacts/takefive-ffmpeg-android-arm64.tar.gz takefive_prebuilt_android/
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: takefive-ffmpeg-android-arm64
+        path: artifacts/
+
+    - name: Determine release version
+      id: version
+      run: |
+        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+        elif [[ -n "${{ github.event.inputs.version }}" ]]; then
+          echo "tag=v${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+        else
+          PKG_VERSION=$(node -e "process.stdout.write(require('./package.json').version)")
+          echo "tag=v${PKG_VERSION}" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Publish to GitHub Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG="${{ steps.version.outputs.tag }}"
+        gh release create "${TAG}" \
+          --title "TakeFive FFmpeg Kit ${TAG}" \
+          --notes "Prebuilt FFmpeg static libraries (FFmpeg 6.0, libmp3lame, libopenh264, libfreetype)" \
+          || true
+        gh release upload "${TAG}" \
+          artifacts/takefive-ffmpeg-android-arm64.tar.gz \
+          --clobber

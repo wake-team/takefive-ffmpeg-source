@@ -1,9 +1,15 @@
-name: Build TakeFive FFmpeg
+name: Build iOS
 
 on:
   push:
     tags:
       - 'v*'
+    paths:
+      - 'build_takefive.sh'
+      - 'patch_ffmpeg.sh'
+      - 'scripts/fetch_deps.sh'
+      - 'scripts/build_lib*.sh'
+      - 'apple/**'
   workflow_dispatch:
     inputs:
       version:
@@ -15,45 +21,6 @@ permissions:
   contents: write
 
 jobs:
-  build-android:
-    name: Build Android arm64-v8a
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Install Build Dependencies
-      run: |
-        sudo apt-get update -q
-        sudo apt-get install -y --no-install-recommends \
-          autoconf automake libtool pkg-config nasm make git curl
-
-    - name: Install Android NDK
-      run: |
-        NDK_VERSION=27.2.12479018
-        echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "ndk;${NDK_VERSION}"
-        echo "ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
-
-    - name: Build Android arm64-v8a
-      run: |
-        chmod +x *.sh scripts/*.sh
-        ./build_takefive_android.sh \
-          --enable-libmp3lame \
-          --enable-libopenh264 \
-          --enable-libfreetype
-
-    - name: Package Artifacts
-      run: |
-        mkdir -p artifacts
-        tar -czf artifacts/takefive-ffmpeg-android-arm64.tar.gz takefive_prebuilt_android/
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: takefive-ffmpeg-android-arm64
-        path: artifacts/
-
   build-ios:
     name: Build iOS arm64
     runs-on: macos-latest
@@ -110,27 +77,6 @@ jobs:
         name: takefive-ffmpeg-ios-arm64
         path: artifacts/
 
-  release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    needs: [build-ios, build-android]
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Download iOS Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: takefive-ffmpeg-ios-arm64
-        path: artifacts/
-
-    - name: Download Android Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: takefive-ffmpeg-android-arm64
-        path: artifacts/
-
     - name: Determine release version
       id: version
       run: |
@@ -143,14 +89,16 @@ jobs:
           echo "tag=v${PKG_VERSION}" >> "$GITHUB_OUTPUT"
         fi
 
-    - name: Create GitHub Release
+    - name: Publish to GitHub Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         TAG="${{ steps.version.outputs.tag }}"
         gh release create "${TAG}" \
           --title "TakeFive FFmpeg Kit ${TAG}" \
-          --notes "Prebuilt FFmpeg static libraries for iOS arm64 and Android arm64-v8a (FFmpeg 6.0, libmp3lame, libopenh264, libfreetype)" \
+          --notes "Prebuilt FFmpeg static libraries (FFmpeg 6.0, libmp3lame, libopenh264, libfreetype)" \
+          || true
+        gh release upload "${TAG}" \
           artifacts/takefive_prebuilt.tar.gz \
           artifacts/takefive-ffmpeg-ios-arm64.zip \
-          artifacts/takefive-ffmpeg-android-arm64.tar.gz
+          --clobber
