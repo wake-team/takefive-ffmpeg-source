@@ -60,6 +60,17 @@ fi
 mkdir -p "${OUT_DIR}/include/openh264"
 cp "${OUT_DIR}/include/wels/"*.h "${OUT_DIR}/include/openh264/"
 
+# Compile NDK cpu-features.c and inject into the archive.
+# We patched out COMMON_OBJS += cpu-features.o above to avoid Makefile
+# duplicate-symbol issues, but libopenh264.a still calls android_getCpuCount
+# (from cpu.cpp when ANDROID_NDK is defined). Supply the symbol ourselves.
+CPU_FEATURES_SRC="${ANDROID_NDK_ROOT}/sources/android/cpufeatures/cpu-features.c"
+${CC} --sysroot="${SYSROOT}" -target ${TARGET}${API} \
+  -DANDROID_NDK -I"${ANDROID_NDK_ROOT}/sources/android/cpufeatures" \
+  -c "${CPU_FEATURES_SRC}" -o /tmp/cpu_features.o
+${AR} r "${OUT_DIR}/lib/libopenh264.a" /tmp/cpu_features.o
+echo "cpu-features.o injected into libopenh264.a"
+
 # Fix the prefix in the installed .pc file (preserves Libs.private: -lstdc++ -lm
 # needed for FFmpeg's pkg-config --static link test against this C++ library)
 mkdir -p "${OUT_DIR}/lib/pkgconfig"
