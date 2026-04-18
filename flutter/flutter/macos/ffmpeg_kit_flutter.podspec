@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.description      = 'A Flutter plugin for running FFmpeg and FFprobe commands.'
   s.homepage         = 'https://github.com/wake-team/takefive-ffmpeg-source'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'TakeFive Team' => 'opensource@takefive.app' }
+  s.author           = { 'TakeFive Team' => 'contact@techtranslab.com' }
 
   s.platform            = :osx
   s.requires_arc        = true

@@ -1,13 +1,10 @@
 #!/bin/bash
 set -e
 
-# Configuration: Update these tags as needed
-LAME_TAG="RELEASE__3_100"
+# Dependency versions — update here to upgrade
+FFMPEG_TAG="n7.1"
 OPENH264_TAG="v2.3.1"
-LIBASS_TAG="0.17.1"
-FRIBIDI_TAG="v1.0.13"
 HARFBUZZ_TAG="8.0.1"
-EXPAT_TAG="R_2_5_0"
 
 BASEDIR="$(cd "$(dirname "$0")/.." && pwd)"
 SRC_DIR="${BASEDIR}/src"
@@ -32,15 +29,29 @@ fetch_lib() {
 
 mkdir -p "${SRC_DIR}"
 
-# Fetch FFmpeg Main Repository
-FFMPEG_TAG="n7.1"
+# FFmpeg (official upstream)
 fetch_lib "ffmpeg" "https://github.com/FFmpeg/FFmpeg" "${FFMPEG_TAG}"
 
-# Fetch Core Dependencies (LGPL Compliant)
-fetch_lib "lame" "https://github.com/arthenica/lame" "${LAME_TAG}"
-fetch_lib "openh264" "https://github.com/arthenica/openh264" "${OPENH264_TAG}"
-fetch_lib "libass" "https://github.com/arthenica/libass" "${LIBASS_TAG}"
-# FreeType fetched as tarball (not git clone) to avoid Makefile submodule init failures
+# LAME MP3 encoder (official SourceForge tarball — no authoritative GitHub mirror)
+LAME_DIR="${SRC_DIR}/lame"
+if [ ! -d "${LAME_DIR}" ]; then
+  echo "📦 Fetching lame (tarball)..."
+  curl -L "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz" -o /tmp/lame.tar.gz
+  mkdir -p "${LAME_DIR}"
+  tar -xzf /tmp/lame.tar.gz -C "${LAME_DIR}" --strip-components=1
+  rm /tmp/lame.tar.gz
+else
+  echo "   lame: Already exists, skipping..."
+fi
+
+# OpenH264 H.264 software codec (official Cisco upstream)
+fetch_lib "openh264" "https://github.com/cisco/openh264" "${OPENH264_TAG}"
+
+# HarfBuzz text shaping for drawtext filter (official upstream)
+fetch_lib "harfbuzz" "https://github.com/harfbuzz/harfbuzz" "${HARFBUZZ_TAG}"
+
+# FreeType font renderer for drawtext filter
+# Fetched as tarball — git clone triggers submodule init failures in CI
 FREETYPE_DIR="${SRC_DIR}/freetype"
 if [ ! -d "${FREETYPE_DIR}" ]; then
   echo "📦 Fetching freetype (tarball)..."
@@ -51,8 +62,5 @@ if [ ! -d "${FREETYPE_DIR}" ]; then
 else
   echo "   freetype: Already exists, skipping..."
 fi
-fetch_lib "fribidi" "https://github.com/fribidi/fribidi" "${FRIBIDI_TAG}" || fetch_lib "fribidi" "https://github.com/arthenica/fribidi" "${FRIBIDI_TAG}"
-fetch_lib "harfbuzz" "https://github.com/harfbuzz/harfbuzz" "${HARFBUZZ_TAG}" || fetch_lib "harfbuzz" "https://github.com/arthenica/harfbuzz" "${HARFBUZZ_TAG}"
-fetch_lib "expat" "https://github.com/libexpat/libexpat" "${EXPAT_TAG}" || fetch_lib "expat" "https://github.com/arthenica/libexpat" "${EXPAT_TAG}"
 
 echo "✅ All dependencies fetched to ${SRC_DIR}"

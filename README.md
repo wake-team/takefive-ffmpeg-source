@@ -11,7 +11,7 @@ An optimized FFmpeg build system for iOS and Android, specifically engineered fo
 - **Hardware Acceleration:** Native support for Apple **VideoToolbox** (iOS) and Android **MediaCodec**.
 - **Commercial Friendly:** Strictly configured for **LGPL v3.0**. GPL/Non-free components are disabled to ensure compatibility with private commercial applications.
 - **Architecture Optimized:** Focused on `arm64` (physical devices) and `arm64-simulator` (Apple Silicon development).
-- **Consolidated Dependencies:** Includes patched versions of `libass`, `freetype`, `fribidi`, `lame`, and `openh264`.
+- **Consolidated Dependencies:** `libmp3lame`, `libopenh264`, `libfreetype`, `libharfbuzz` — all LGPL-compatible.
 
 ## 🚀 Build System
 
@@ -67,6 +67,18 @@ Because this engine creates pure, precompiled static libraries (e.g., `libavcode
 5. **Java/Kotlin Invoke**: Craft your own local JNI wrappers in C++ (`native()` functions) to interface with the extracted headers within your Android environment!
 
 
+
+## Attribution
+
+This project is a specialized fork of [FFmpegKit](https://github.com/arthenica/ffmpeg-kit) by [ARTHENICA](https://www.arthenica.com), originally licensed under LGPL v3.0. We are grateful for their foundational work on the Android JNI layer, iOS build system, and React Native bindings.
+
+Modifications made in this fork:
+- FFmpeg upgraded from 6.0 → 7.1
+- Build system rewritten to a minimal fetch-and-compile pipeline
+- Dependencies updated to official upstream sources
+- Android AAR build pipeline added
+- libharfbuzz added for drawtext text shaping
+- Android MediaCodec hardware H.264 encoder enabled
 
 ---
 Maintained by the **Wake Team** for the TakeFive Mobile App.
