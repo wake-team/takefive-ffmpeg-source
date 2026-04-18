@@ -9,6 +9,8 @@ on:
       - 'patch_ffmpeg.sh'
       - 'scripts/fetch_deps.sh'
       - 'scripts/build_android_*.sh'
+      - 'android/ffmpeg-kit-android-lib/**'
+      - 'react-native/android/**'
   workflow_dispatch:
     inputs:
       version:
@@ -32,7 +34,13 @@ jobs:
       run: |
         sudo apt-get update -q
         sudo apt-get install -y --no-install-recommends \
-          autoconf automake libtool pkg-config nasm make git curl
+          autoconf automake libtool pkg-config nasm make git curl cmake
+
+    - name: Set up Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '17'
 
     - name: Install Android NDK
       run: |
@@ -40,18 +48,24 @@ jobs:
         echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "ndk;${NDK_VERSION}"
         echo "ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
 
-    - name: Build Android arm64-v8a
+    - name: Build Android arm64-v8a static libs
       run: |
         chmod +x *.sh scripts/*.sh
         ./build_takefive_android.sh \
           --enable-libmp3lame \
           --enable-libopenh264 \
-          --enable-libfreetype
+          --enable-libfreetype \
+          --enable-libharfbuzz
+
+    - name: Build Android AAR
+      run: |
+        bash scripts/build_android_aar.sh
 
     - name: Package Artifacts
       run: |
         mkdir -p artifacts
         tar -czf artifacts/takefive-ffmpeg-android-arm64.tar.gz takefive_prebuilt_android/
+        cp takefive_prebuilt_android/ffmpeg-kit.aar artifacts/takefive-ffmpeg-android.aar
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -78,8 +92,9 @@ jobs:
         TAG="${{ steps.version.outputs.tag }}"
         gh release create "${TAG}" \
           --title "TakeFive FFmpeg Kit ${TAG}" \
-          --notes "Prebuilt FFmpeg static libraries (FFmpeg 6.0, libmp3lame, libopenh264, libfreetype)" \
+          --notes "Prebuilt FFmpeg static libraries (FFmpeg 7.1, libmp3lame, libopenh264, libfreetype)" \
           || true
         gh release upload "${TAG}" \
           artifacts/takefive-ffmpeg-android-arm64.tar.gz \
+          artifacts/takefive-ffmpeg-android.aar \
           --clobber

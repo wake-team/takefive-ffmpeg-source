@@ -56,3 +56,24 @@ if [ -d "${AVUTIL_DIR}" ] && [ -d "${SRC_FFMPEG}" ]; then
     fi
   done
 fi
+
+# ── 4. Download Android AAR ───────────────────────────────────────────────────
+ANDROID_PREBUILT_DIR="${PKG_ROOT}/takefive_prebuilt_android"
+ANDROID_AAR="${ANDROID_PREBUILT_DIR}/ffmpeg-kit.aar"
+ANDROID_AAR_URL="https://github.com/wake-team/takefive-ffmpeg-source/releases/download/${RELEASE_TAG}/takefive-ffmpeg-android.aar"
+
+if [ -f "${ANDROID_AAR}" ]; then
+  echo "✅ takefive-ffmpeg-kit: Android AAR already present. Skipping download."
+else
+  echo "📦 takefive-ffmpeg-kit: Downloading Android AAR (${RELEASE_TAG})..."
+  mkdir -p "${ANDROID_PREBUILT_DIR}"
+  curl -L -o "${ANDROID_AAR}" "${ANDROID_AAR_URL}" 2>/dev/null || {
+    echo "⚠️  takefive-ffmpeg-kit: Could not download Android AAR from ${ANDROID_AAR_URL}"
+    echo "   Android builds will fail until the AAR is available."
+    # Don't exit — iOS-only installs should still succeed
+    true
+  }
+  if [ -f "${ANDROID_AAR}" ]; then
+    echo "✅ takefive-ffmpeg-kit: Android AAR installed to ${ANDROID_AAR}"
+  fi
+fi

@@ -14,7 +14,7 @@ TARGET=aarch64-linux-android
 TOOLCHAIN="${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64"
 CC="${TOOLCHAIN}/bin/${TARGET}${API}-clang"
 SYSROOT="${TOOLCHAIN}/sysroot"
-CFLAGS="--sysroot=${SYSROOT} -target ${TARGET}${API} -O2"
+CFLAGS="--sysroot=${SYSROOT} -target ${TARGET}${API} -fPIC -O2"
 
 echo "----------------------------------------------------------"
 echo "🔨 Building LAME for Android arm64-v8a"

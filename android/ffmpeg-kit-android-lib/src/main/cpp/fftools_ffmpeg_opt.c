@@ -62,6 +62,7 @@
 #include "config.h"
 
 #include <stdint.h>
+#include <time.h>
 
 #if HAVE_SYS_RESOURCE_H
 #include <sys/time.h>

@@ -39,7 +39,8 @@ jobs:
         ./build_takefive.sh \
           --enable-libmp3lame \
           --enable-libopenh264 \
-          --enable-libfreetype
+          --enable-libfreetype \
+          --enable-libharfbuzz
 
     - name: Diagnose freetype pkg-config
       if: always()
@@ -96,7 +97,7 @@ jobs:
         TAG="${{ steps.version.outputs.tag }}"
         gh release create "${TAG}" \
           --title "TakeFive FFmpeg Kit ${TAG}" \
-          --notes "Prebuilt FFmpeg static libraries (FFmpeg 6.0, libmp3lame, libopenh264, libfreetype)" \
+          --notes "Prebuilt FFmpeg static libraries (FFmpeg 7.1, libmp3lame, libopenh264, libfreetype)" \
           || true
         gh release upload "${TAG}" \
           artifacts/takefive_prebuilt.tar.gz \

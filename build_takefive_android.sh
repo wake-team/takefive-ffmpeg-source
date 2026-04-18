@@ -66,10 +66,24 @@ for arg in "$@"; do
 done
 
 # 7. Configure & Build FFmpeg
+echo "=== PKG_CONFIG_PATH ==="
+echo "${PKG_CONFIG_PATH}"
+HB_PC="${DEPS_BASE_DIR}/libharfbuzz/lib/pkgconfig/harfbuzz.pc"
+if [ -f "${HB_PC}" ]; then
+  echo "=== harfbuzz.pc ==="
+  cat "${HB_PC}"
+  echo "=== pkg-config test ==="
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --exists harfbuzz && echo "pkg-config OK" || echo "pkg-config FAILED"
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --cflags --libs harfbuzz 2>&1 || true
+else
+  echo "harfbuzz.pc NOT FOUND at ${HB_PC}"
+fi
+
 cd "${SRC_DIR}"
 echo "⚙️  Configuring FFmpeg for Android arm64-v8a..."
 
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
+  --pkg-config="$(which pkg-config)" \
   --prefix="${PREFIX}" \
   --enable-cross-compile \
   --target-os=android \
@@ -87,6 +101,8 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
   --disable-programs --disable-doc --disable-debug --disable-asm \
   --enable-pic \
   --enable-small --enable-version3 --disable-shared --enable-static \
+  --enable-mediacodec --enable-jni \
+  --enable-encoder=h264_mediacodec --enable-decoder=h264_mediacodec \
   --enable-filter=eq,colorbalance,scale,pad,setsar,fps,trim,setpts,atrim,asetpts,atempo,concat,anullsrc,aloop,volume,sidechaincompress,amix,aevalsrc,overlay,drawtext \
   "${FFMPEG_EXTRA_FLAGS[@]}" < /dev/null || {
   echo "=== FFmpeg configure failed — last 80 lines of ffbuild/config.log ==="

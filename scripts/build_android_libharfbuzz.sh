@@ -3,22 +3,24 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SRC_DIR="${BASE_DIR}/src/harfbuzz"
-OUT_DIR="${BASE_DIR}/takefive_prebuilt/dependencies/libharfbuzz"
-FREETYPE_DIR="${BASE_DIR}/takefive_prebuilt/dependencies/libfreetype"
-SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
+OUT_DIR="${BASE_DIR}/takefive_prebuilt_android/dependencies/libharfbuzz"
+FREETYPE_DIR="${BASE_DIR}/takefive_prebuilt_android/dependencies/libfreetype"
+
+if [[ -z "${ANDROID_NDK_ROOT}" ]]; then
+  echo "❌ ANDROID_NDK_ROOT must be set" && exit 1
+fi
 
 echo "----------------------------------------------------------"
-echo "🔨 Building HarfBuzz for iOS arm64"
+echo "🔨 Building HarfBuzz for Android arm64-v8a"
 echo "----------------------------------------------------------"
 
 mkdir -p "${OUT_DIR}"
-rm -rf "${SRC_DIR}/hb_build"
+rm -rf "${SRC_DIR}/hb_build_android"
 
-cmake -S "${SRC_DIR}" -B "${SRC_DIR}/hb_build" \
-  -DCMAKE_SYSTEM_NAME=iOS \
-  -DCMAKE_OSX_ARCHITECTURES=arm64 \
-  -DCMAKE_OSX_SYSROOT="${SDK_PATH}" \
-  -DCMAKE_OSX_DEPLOYMENT_TARGET=15.1 \
+cmake -S "${SRC_DIR}" -B "${SRC_DIR}/hb_build_android" \
+  -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake" \
+  -DANDROID_ABI=arm64-v8a \
+  -DANDROID_PLATFORM=android-21 \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${OUT_DIR}" \
   -DBUILD_SHARED_LIBS=OFF \
@@ -27,12 +29,11 @@ cmake -S "${SRC_DIR}" -B "${SRC_DIR}/hb_build" \
   -DFREETYPE_LIBRARY="${FREETYPE_DIR}/lib/libfreetype.a" \
   -DHB_HAVE_GLIB=OFF \
   -DHB_HAVE_ICU=OFF \
-  -DHB_HAVE_CORETEXT=OFF \
   -DHB_BUILD_TESTS=OFF \
   -DHB_BUILD_UTILITIES=OFF
 
-cmake --build "${SRC_DIR}/hb_build" -j$(sysctl -n hw.ncpu)
-cmake --install "${SRC_DIR}/hb_build"
+cmake --build "${SRC_DIR}/hb_build_android" -j$(nproc)
+cmake --install "${SRC_DIR}/hb_build_android"
 
 # Always write a minimal self-contained .pc — no external Requires
 mkdir -p "${OUT_DIR}/lib/pkgconfig"
@@ -50,4 +51,4 @@ Libs: -L${OUT_DIR}/lib -lharfbuzz -L${FREETYPE_DIR}/lib -lfreetype
 Cflags: -I${OUT_DIR}/include/harfbuzz
 EOF
 
-echo "✅ HarfBuzz iOS build complete → ${OUT_DIR}"
+echo "✅ HarfBuzz Android build complete → ${OUT_DIR}"

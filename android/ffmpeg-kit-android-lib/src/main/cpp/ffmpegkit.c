@@ -21,6 +21,7 @@
 #include <stdatomic.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #include "config.h"
 #include "libavcodec/jni.h"
@@ -685,9 +686,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     monitorInit();
 
     redirectionEnabled = 0;
-
-    av_set_saf_open(saf_open);
-    av_set_saf_close(saf_close);
 
     enableNativeRedirection();
 

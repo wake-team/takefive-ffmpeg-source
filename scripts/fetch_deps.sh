@@ -33,7 +33,7 @@ fetch_lib() {
 mkdir -p "${SRC_DIR}"
 
 # Fetch FFmpeg Main Repository
-FFMPEG_TAG="n6.0"
+FFMPEG_TAG="n7.1"
 fetch_lib "ffmpeg" "https://github.com/FFmpeg/FFmpeg" "${FFMPEG_TAG}"
 
 # Fetch Core Dependencies (LGPL Compliant)

@@ -125,5 +125,7 @@ repositories {
 
 dependencies {
   api 'com.facebook.react:react-native:+'
-  implementation 'com.arthenica:ffmpeg-kit-' + safePackageName(safeExtGet('ffmpegKitPackage', 'https')) + ':' + safePackageVersion(safeExtGet('ffmpegKitPackage', 'https'))
+  // Use our custom-built AAR (downloaded by postinstall.sh from GitHub Releases).
+  // It bundles libffmpegkit.so statically linked with FFmpeg + mp3lame + openh264 + freetype.
+  implementation files("${projectDir}/../../takefive_prebuilt_android/ffmpeg-kit.aar")
 }
