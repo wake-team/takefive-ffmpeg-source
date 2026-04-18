@@ -56,9 +56,13 @@ if [ -z "$(ls -A "${OUT_DIR}/include/wels" 2>/dev/null)" ]; then
   cp "${SRC_DIR}"/codec/api/wels/*.h "${OUT_DIR}/include/wels/"
 fi
 
-# Generate pkg-config file for FFmpeg's configure (always overwrite to ensure correct path)
+# Fix the prefix in the installed .pc file (preserves Libs.private: -lstdc++ -lm
+# needed for FFmpeg's pkg-config --static link test against this C++ library)
 mkdir -p "${OUT_DIR}/lib/pkgconfig"
-cat > "${OUT_DIR}/lib/pkgconfig/openh264.pc" << EOF
+if [ -f "${OUT_DIR}/lib/pkgconfig/openh264.pc" ]; then
+  sed -i "s|^prefix=.*$|prefix=${OUT_DIR}|" "${OUT_DIR}/lib/pkgconfig/openh264.pc"
+else
+  cat > "${OUT_DIR}/lib/pkgconfig/openh264.pc" << EOF
 prefix=${OUT_DIR}
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
@@ -68,11 +72,13 @@ Name: openh264
 Description: H.264 codec library
 Version: 2.3.1
 Libs: -L\${libdir} -lopenh264
+Libs.private: -lstdc++ -lm
 Cflags: -I\${includedir}
 EOF
+fi
 
 echo "=== OpenH264 install verification ==="
-ls -la "${OUT_DIR}/lib/" || true
-cat "${OUT_DIR}/lib/pkgconfig/openh264.pc" || true
+ls -la "${OUT_DIR}/lib/"
+cat "${OUT_DIR}/lib/pkgconfig/openh264.pc"
 
 echo "✅ OpenH264 (Android) build successful! Files in ${OUT_DIR}"
