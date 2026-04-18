@@ -56,6 +56,10 @@ if [ -z "$(ls -A "${OUT_DIR}/include/wels" 2>/dev/null)" ]; then
   cp "${SRC_DIR}"/codec/api/wels/*.h "${OUT_DIR}/include/wels/"
 fi
 
+# FFmpeg 6.0 configure checks for openh264/codec_api.h but make installs to include/wels/
+mkdir -p "${OUT_DIR}/include/openh264"
+cp "${OUT_DIR}/include/wels/"*.h "${OUT_DIR}/include/openh264/"
+
 # Fix the prefix in the installed .pc file (preserves Libs.private: -lstdc++ -lm
 # needed for FFmpeg's pkg-config --static link test against this C++ library)
 mkdir -p "${OUT_DIR}/lib/pkgconfig"
@@ -74,7 +78,7 @@ Name: openh264
 Description: H.264 codec library
 Version: 2.3.1
 Libs: -L\${libdir} -lopenh264
-Libs.private: -lstdc++ -lm
+Libs.private: -lc++ -lm
 Cflags: -I\${includedir}
 EOF
 fi
