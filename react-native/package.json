@@ -19,7 +19,7 @@
     "ios"
   ],
   "repository": "https://github.com/wake-team/takefive-ffmpeg-source",
-  "author": "ARTHENICA <open-source@arthenica.com> (https://www.arthenica.com)",
+  "author": "TakeFive Team <opensource@takefive.app>",
   "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/wake-team/takefive-ffmpeg-source/issues"

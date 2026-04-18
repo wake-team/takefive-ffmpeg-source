@@ -17,9 +17,9 @@
  * along with FFmpegKit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.arthenica.ffmpegkit;
+package com.takefive.ffmpegkit;
 
-import static com.arthenica.ffmpegkit.FFmpegSessionTest.TEST_ARGUMENTS;
+import static com.takefive.ffmpegkit.FFmpegSessionTest.TEST_ARGUMENTS;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -77,14 +77,14 @@ All libraries created by `android.sh` can be found under the `prebuilt` director
     }
 
     dependencies {
-        implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
+        implementation 'com.takefive:ffmpeg-kit:2.0.0'
     }
     ```
 
 2. Execute synchronous `FFmpeg` commands.
 
     ```java
-    import com.arthenica.ffmpegkit.FFmpegKit;
+    import com.takefive.ffmpegkit.FFmpegKit;
 
     FFmpegSession session = FFmpegKit.execute("-i file1.mp4 -c:v mpeg4 file2.mp4");
     if (ReturnCode.isSuccess(session.getReturnCode())) {
@@ -135,7 +135,7 @@ All libraries created by `android.sh` can be found under the `prebuilt` director
     String failStackTrace = session.getFailStackTrace();
 
     // The list of logs generated for this execution
-    List<com.arthenica.ffmpegkit.Log> logs = session.getLogs();
+    List<com.takefive.ffmpegkit.Log> logs = session.getLogs();
 
     // The list of statistics generated for this execution
     List<Statistics> statistics = session.getStatistics();
@@ -158,7 +158,7 @@ All libraries created by `android.sh` can be found under the `prebuilt` director
     }, new LogCallback() {
 
         @Override
-        public void apply(com.arthenica.ffmpegkit.Log log) {
+        public void apply(com.takefive.ffmpegkit.Log log) {
 
             // CALLED WHEN SESSION PRINTS LOGS
 
@@ -295,7 +295,7 @@ All libraries created by `android.sh` can be found under the `prebuilt` director
         FFmpegKitConfig.enableLogCallback(new LogCallback() {
     
             @Override
-            public void apply(final com.arthenica.ffmpegkit.Log log) {
+            public void apply(final com.takefive.ffmpegkit.Log log) {
                 ...
             }
         });

@@ -17,12 +17,12 @@
  * along with FFmpegKit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.arthenica.ffmpegkit.flutter;
+package com.takefive.ffmpegkit.flutter;
 
 import androidx.annotation.NonNull;
 
-import com.arthenica.ffmpegkit.FFmpegKitConfig;
-import com.arthenica.ffmpegkit.MediaInformationSession;
+import com.takefive.ffmpegkit.FFmpegKitConfig;
+import com.takefive.ffmpegkit.MediaInformationSession;
 
 import io.flutter.plugin.common.MethodChannel;
 

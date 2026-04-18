@@ -17,7 +17,7 @@
  *  along with FFmpegKit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.arthenica.ffmpegkit;
+package com.takefive.ffmpegkit;
 
 /**
  * <p>A custom FFprobe session, which produces a <code>MediaInformation</code> object using the

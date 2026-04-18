@@ -7,7 +7,7 @@ The following is a set of guidelines for contributing to `FFmpegKit`!
 ## Project Resources
 
 * [Wiki](https://github.com/wake-team/takefive-ffmpeg-source/wiki) includes most detailed documentation we have
-* [FFmpegKit Feature Roadmap](https://github.com/orgs/arthenica/projects/1) shows our long term plans for the project
+* [FFmpegKit Feature Roadmap](https://github.com/wake-team/takefive-ffmpeg-source/issues) shows our long term plans for the project
 * [How To Get Help](https://github.com/wake-team/takefive-ffmpeg-source/issues/215) details what you need to do if you need help
 * [Discussions](https://github.com/wake-team/takefive-ffmpeg-source/discussions) is where we expect you to ask questions
 * [Issues](https://github.com/wake-team/takefive-ffmpeg-source/issues) is for bugs and issues
@@ -29,7 +29,7 @@ Create an issue and state that this bug doesn't exist on the `desktop` version o
 ## Feature Requests
 
 Before creating a feature request, please check our long term plan for the project, which is visible under the
-[FFmpegKit Feature Roadmap](https://github.com/orgs/arthenica/projects/1). Then create an issue and fill out the
+[FFmpegKit Feature Roadmap](https://github.com/wake-team/takefive-ffmpeg-source/issues). Then create an issue and fill out the
 `Feature request` issue template and provide as many details as possible.
 
 ### External Library Requests
