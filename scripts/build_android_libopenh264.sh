@@ -61,6 +61,8 @@ fi
 mkdir -p "${OUT_DIR}/lib/pkgconfig"
 if [ -f "${OUT_DIR}/lib/pkgconfig/openh264.pc" ]; then
   sed -i "s|^prefix=.*$|prefix=${OUT_DIR}|" "${OUT_DIR}/lib/pkgconfig/openh264.pc"
+  # Android NDK uses libc++ not libstdc++; replace so FFmpeg's link test passes
+  sed -i "s|-lstdc++|-lc++|g" "${OUT_DIR}/lib/pkgconfig/openh264.pc"
 else
   cat > "${OUT_DIR}/lib/pkgconfig/openh264.pc" << EOF
 prefix=${OUT_DIR}

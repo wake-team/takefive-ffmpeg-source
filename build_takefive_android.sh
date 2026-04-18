@@ -90,6 +90,7 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
   --strip="${STRIP}" \
   --extra-cflags="${FFMPEG_CFLAGS[*]}" \
   --extra-ldflags="${FFMPEG_LDFLAGS[*]}" \
+  --extra-libs="-lc++ -lm" \
   --disable-programs --disable-doc --disable-debug --disable-asm \
   --enable-pic \
   --enable-small --enable-version3 --disable-shared --enable-static \
