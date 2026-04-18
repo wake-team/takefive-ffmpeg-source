@@ -76,6 +76,11 @@ done
 cd "${SRC_DIR}"
 echo "⚙️  Configuring FFmpeg for Android arm64-v8a..."
 
+echo "=== pkg-config openh264 self-test ==="
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --exists openh264 && echo "EXISTS ok" || echo "EXISTS FAILED"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --modversion openh264 2>&1 || true
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --cflags --libs --static openh264 2>&1 || true
+
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
   --prefix="${PREFIX}" \
   --enable-cross-compile \
@@ -95,7 +100,11 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
   --enable-pic \
   --enable-small --enable-version3 --disable-shared --enable-static \
   --enable-filter=eq,colorbalance,scale,pad,setsar,fps,trim,setpts,atrim,asetpts,atempo,concat,anullsrc,aloop,volume,sidechaincompress,amix,aevalsrc,overlay,drawtext \
-  "${FFMPEG_EXTRA_FLAGS[@]}" < /dev/null
+  "${FFMPEG_EXTRA_FLAGS[@]}" < /dev/null || {
+  echo "=== FFmpeg configure failed — last 80 lines of ffbuild/config.log ==="
+  tail -80 ffbuild/config.log 2>/dev/null || true
+  exit 1
+}
 
 make -j$(nproc)
 make install
