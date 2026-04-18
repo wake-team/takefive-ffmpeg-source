@@ -81,6 +81,18 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --exists openh264 && echo "EXIST
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --modversion openh264 2>&1 || true
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --cflags --libs --static openh264 2>&1 || true
 
+echo "=== manual openh264 compile+link test ==="
+OPENH264_INC=$(PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --cflags openh264 2>/dev/null)
+OPENH264_LIB=$(PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" pkg-config --static --libs openh264 2>/dev/null)
+cat > /tmp/test_openh264.cpp << 'EOF'
+#include "openh264/codec_api.h"
+int main() { ISVCEncoder *enc = nullptr; WelsCreateSVCEncoder(&enc); return 0; }
+EOF
+echo "-- compile --"
+${CXX} --sysroot="${SYSROOT}" -target ${TARGET}${API} ${OPENH264_INC} -c /tmp/test_openh264.cpp -o /tmp/test_openh264.o && echo "compile OK" || echo "compile FAILED"
+echo "-- link --"
+${CXX} --sysroot="${SYSROOT}" -target ${TARGET}${API} /tmp/test_openh264.o ${OPENH264_LIB} -o /tmp/test_openh264_bin && echo "link OK" || echo "link FAILED"
+
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
   --prefix="${PREFIX}" \
   --enable-cross-compile \
@@ -101,8 +113,10 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" bash ./configure \
   --enable-small --enable-version3 --disable-shared --enable-static \
   --enable-filter=eq,colorbalance,scale,pad,setsar,fps,trim,setpts,atrim,asetpts,atempo,concat,anullsrc,aloop,volume,sidechaincompress,amix,aevalsrc,overlay,drawtext \
   "${FFMPEG_EXTRA_FLAGS[@]}" < /dev/null || {
-  echo "=== FFmpeg configure failed — last 80 lines of ffbuild/config.log ==="
-  tail -80 ffbuild/config.log 2>/dev/null || true
+  echo "=== FFmpeg configure failed — grep openh264 from config.log ==="
+  grep -A 30 "check_pkg_config.*openh264\|openh264.*not found\|WelsCreate" ffbuild/config.log 2>/dev/null | head -100 || true
+  echo "=== last 120 lines of ffbuild/config.log ==="
+  tail -120 ffbuild/config.log 2>/dev/null || true
   exit 1
 }
 
