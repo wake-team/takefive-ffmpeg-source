@@ -2,7 +2,7 @@
 set -e
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-SRC_DIR="${BASE_DIR}/src/lame/lame"
+SRC_DIR="${BASE_DIR}/src/lame"
 OUT_DIR="${BASE_DIR}/takefive_prebuilt_android/dependencies/libmp3lame"
 
 if [[ -z "${ANDROID_NDK_ROOT}" ]]; then
